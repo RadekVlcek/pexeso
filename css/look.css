@@ -1,0 +1,13 @@
+ul li {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: 150px 150px;
+}
+
+li {
+    width: 150px;
+    height: 150px;
+    border: 2px solid #eeeeee;
+    border-radius: 3px;
+    margin: 7px;
+}
