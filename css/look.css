@@ -1,13 +1,15 @@
-ul li {
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-size: 150px 150px;
+ul#target {
+    display: none;
 }
 
-li {
-    width: 150px;
-    height: 150px;
+ul#target li {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: 85px 85px;
+    width: 85px;
+    height: 85px;
+    margin: 3px;
     border: 2px solid #eeeeee;
     border-radius: 3px;
-    margin: 7px;
+    cursor: pointer;
 }
