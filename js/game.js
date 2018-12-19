@@ -48,7 +48,6 @@ for(let row=0 ; row<sqrt ; row++){
 
 HTMLtarget.innerHTML = output;
 
-
 var isWaiting = false,
     lock = false,
     firstCard = { src: '', id: '' },
@@ -58,11 +57,6 @@ var isWaiting = false,
 // console.log(intervalMatch);
 
 function decide(id){
-    console.log('lock: ' + lock);
-    // Clear both intervals
-    clearInterval(intervalNotMatch);
-    clearInterval(intervalMatch);
-
     if(!lock){
         let getSrc = sCards[id].src;
 
@@ -85,7 +79,7 @@ function decide(id){
             // match
             if(firstCard.src == secondCard.src){
                 if(firstCard.id != secondCard.id){
-                    intervalMatch = setInterval(function(){
+                    intervalMatch = setTimeout(function(){
                         document.getElementById(firstCard.id).style.visibility = 'hidden';
                         document.getElementById(secondCard.id).style.visibility = 'hidden';
                         lock = false;
@@ -97,18 +91,19 @@ function decide(id){
 
             // not match
             else {
-                intervalNotMatch = setInterval(function(){
+                intervalNotMatch = setTimeout(function(){
                     document.getElementById(firstCard.id).style.backgroundImage = `url(/cards/${defCard})`;
                     document.getElementById(secondCard.id).style.backgroundImage = `url(/cards/${defCard})`;
                     lock = false;
-                }, 800);
+                }, 800);   
             }
 
             isWaiting = false;
         }
     }
-    
+
     else {
+        console.log('LOCKED.')
         return;
     }
 }
