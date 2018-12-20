@@ -1,28 +1,28 @@
 window.onload = init;
 
-var cardsAmount = 36,
-    cards1 = [],
-    cards2 = [],
-    sCards,
-    matches = 0,
-    isWaiting = false,
-    lock = false,
-    firstCard = { src: '', id: '' },
-    secondCard = { src: '', id: '' },
-    timerMatch,
+var timerMatch,
     timerNotMatch,
     timerGame,
-    newSecs = 0,
-    newMins = 0;
-    newMils = 0;
-    output = '',
+    isWaiting = false,
+    lock = false,
     inc = 0,
-    sqrt = Math.sqrt(cardsAmount),
+    matches = 0,
+    newSecs = 0,
+    newMins = 0,
+    newMils = 0,
+    cardsAmount = 36,
+    cards1 = [],
+    cards2 = [],
+    sCards = [],
+    firstCard = { src: '', id: '' },
+    secondCard = { src: '', id: '' },    
+    output = '',
     defCard = 'secret.png',
+    sqrt = Math.sqrt(cardsAmount),
     HTMLstart = document.getElementById('start'),
-    HTMLtarget = document.getElementById('target');
-    HTMLtime = document.getElementById('time');
-    HTMLtimeMain = document.getElementById('main');
+    HTMLtarget = document.getElementById('target'),
+    HTMLtime = document.getElementById('time'),
+    HTMLtimeMain = document.getElementById('main'),
     HTMLtimeMili = document.getElementById('mili');
 
 function init(){

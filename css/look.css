@@ -2,7 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
     max-width: 100%;
-    font-family: 'Thasadith', sans-serif;
+    /* font-family: 'Orbitron', sans-serif; */
 }
 
 ul#target li {
@@ -15,18 +15,14 @@ ul#target li {
     background-size: cover;
     margin: 1px 3px 1px 3px;
     padding: 0;
-    border: 1px solid #eeeeee;
+    border: 1px solid #e6e6e6;
     border-radius: 1.5px;
     cursor: pointer;
     transition: transform .15s, opacity .15s;
 }
 
 ul#target li:hover {
-    border: 1px solid #e6e6e6;
-}
-
-#time {
-    font-weight: bold;
+    border: 1px solid #cccccc;
 }
 
 #time #main, #time #mili {
