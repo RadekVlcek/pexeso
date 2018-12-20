@@ -1,21 +1,24 @@
 window.onload = init;
 
-var cardsAmount = 16,
+var cardsAmount = 36,
     cards1 = [],
     cards2 = [],
     sCards,
+    matches = 0,
     isWaiting = false,
     lock = false,
     firstCard = { src: '', id: '' },
     secondCard = { src: '', id: '' },
-    intervalMatch,
-    intervalNotMatch,
+    timerMatch,
+    timerNotMatch,
+    timerGame,
     output = '',
     inc = 0,
     sqrt = Math.sqrt(cardsAmount),
     defCard = 'secret.png',
     HTMLstart = document.getElementById('start'),
     HTMLtarget = document.getElementById('target');
+    HTMLtime = document.getElementById('time');
 
 function init(){
     HTMLstart.addEventListener('click', prepCards);
@@ -24,7 +27,7 @@ function init(){
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
 function shuffleCards(cards) {
     var j, x, i;
-    for (i=cards.length-1; i>0; i--){
+    for (i=cards.length-1 ; i>0 ; i--){
         j = Math.floor(Math.random() * (i + 1));
         x = cards[i];
         cards[i] = cards[j];
@@ -43,6 +46,7 @@ function printCards(){
         }
         output += '<br>';
     }
+
     HTMLtarget.innerHTML = output;
 }
 
@@ -69,10 +73,23 @@ function playCard(id){
             // match
             if(firstCard.src == secondCard.src){
                 if(firstCard.id != secondCard.id){
+                    matches++;
                     lock = true;
-                    intervalMatch = setTimeout(function(){
-                        document.getElementById(firstCard.id).style.visibility = 'hidden';
-                        document.getElementById(secondCard.id).style.visibility = 'hidden';
+                    timerMatch = setTimeout(function(){
+
+                        document.getElementById(firstCard.id).style.transform = 'skew(-0.06turn, 18deg)';
+                        document.getElementById(secondCard.id).style.transform = 'skew(-0.06turn, 18deg)';
+
+                        setTimeout(function(){
+                            document.getElementById(firstCard.id).style.opacity = '0';
+                            document.getElementById(secondCard  .id).style.opacity = '0';
+                        }, 50);
+
+                        setTimeout(function(){
+                            document.getElementById(firstCard.id).style.visibility = 'hidden';
+                            document.getElementById(secondCard.id).style.visibility = 'hidden';
+                        }, 150);
+                        
                         lock = false;
                     }, 700);
                 }
@@ -83,7 +100,7 @@ function playCard(id){
             // not match
             else {
                 lock = true;
-                intervalNotMatch = setTimeout(function(){
+                timerNotMatch = setTimeout(function(){
                     document.getElementById(firstCard.id).style.backgroundImage = `url(/cards/${defCard})`;
                     document.getElementById(secondCard.id).style.backgroundImage = `url(/cards/${defCard})`;
                     lock = false;
@@ -99,8 +116,7 @@ function playCard(id){
 
 // Prepare cards
 function prepCards(){
-    HTMLtarget.style.display = 'block';
-    HTMLstart.style.display = 'none';
+    // HTMLstart.style.display = 'none';
 
     for(let x=0 ; x<cardsAmount/2 ; x++){
         cards1.push({src: x+1});
