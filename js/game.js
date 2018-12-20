@@ -12,6 +12,9 @@ var cardsAmount = 36,
     timerMatch,
     timerNotMatch,
     timerGame,
+    newSecs = 0,
+    newMins = 0;
+    newMils = 0;
     output = '',
     inc = 0,
     sqrt = Math.sqrt(cardsAmount),
@@ -19,6 +22,8 @@ var cardsAmount = 36,
     HTMLstart = document.getElementById('start'),
     HTMLtarget = document.getElementById('target');
     HTMLtime = document.getElementById('time');
+    HTMLtimeMain = document.getElementById('main');
+    HTMLtimeMili = document.getElementById('mili');
 
 function init(){
     HTMLstart.addEventListener('click', prepCards);
@@ -63,6 +68,7 @@ function playCard(id){
             firstCard.src = getSrc;
             firstCard.id = id;
             isWaiting = true;
+            return;
         }
 
         // Is waiting
@@ -114,9 +120,40 @@ function playCard(id){
     else return;
 }
 
+// Run the timer
+function runTimer(){
+    timerGame = setInterval(function(){
+        newSecs++;
+
+        if(newSecs < 10) newSecs = `0${newSecs}`;
+
+        if(newSecs > 59){
+            newSecs = 0;
+            newMins++;
+        }
+
+        let output = `0${newMins}:${newSecs}`;
+
+        HTMLtimeMain.innerHTML = output;
+    }, 1000);
+}
+
+function runMilTimer(){
+    setInterval(function(){
+        newMils++;
+
+        if(newMils > 9) newMils = 0;
+        
+        HTMLtimeMili.innerHTML = newMils;
+    }, 100);
+}
+
 // Prepare cards
 function prepCards(){
     // HTMLstart.style.display = 'none';
+
+    runTimer();
+    runMilTimer();
 
     for(let x=0 ; x<cardsAmount/2 ; x++){
         cards1.push({src: x+1});
