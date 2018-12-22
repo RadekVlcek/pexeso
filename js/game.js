@@ -45,11 +45,20 @@ function init(){
 function runTimers(){
     HTMLstart.style.display = 'none';
     gameStarted = true;
+    var aC;
     
-    for(let x=0 ; x<3 ; x++){
+    for(let x=0 ; x<4 ; x++){
         setTimeout(function(){
             for(let y=0 ; y<cardsAmount ; y++){
-                let aC = animateCards();
+                if(x < 3)
+                    aC = animateCards();
+
+                else {
+                    aC[0] = 0;
+                    aC[1] = 0;
+                    aC[2] = 0; 
+                }
+
                 document.getElementById(y).style.top = `${aC[0]}px`;
                 document.getElementById(y).style.left = `${aC[1]}px`;
                 document.getElementById(y).style.transform = `rotate(${aC[2]}deg)`;
@@ -58,14 +67,6 @@ function runTimers(){
 
         animDelay += 500;
     }
-
-    setTimeout(function(){
-        for(let y=0 ; y<cardsAmount ; y++){
-            document.getElementById(y).style.top = '0px';
-            document.getElementById(y).style.left = '0px';
-            document.getElementById(y).style.transform = 'rotate(0deg)';
-        }
-    }, animDelay);
         
     animDelay = 0;
     runTimer();
@@ -116,7 +117,6 @@ function printCards(){
 // Take action when clicked on a card
 function playCard(id){
     if(gameStarted){
-
         if(!lock){
             let getSrc = sCards[id].src;
 
@@ -186,7 +186,6 @@ function playCard(id){
         }
 
         else return;
-
     }
 
     else return;
@@ -209,7 +208,7 @@ function runTimer(){
     
             HTMLtimeMain.innerHTML = output;
         }, 1000);
-    }, 500);
+    }, 2000);
 }
 
 function runMilTimer(){
@@ -221,6 +220,6 @@ function runMilTimer(){
             
             HTMLtimeMili.innerHTML = newMils;
         }, 100);
-    }, 500);
+    }, 2500);
 }
 
