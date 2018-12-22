@@ -18,7 +18,7 @@ var timerMatch,
     cards2 = [],
     sCards = [],
     firstCard = { src: '', id: '' },
-    secondCard = { src: '', id: '' },    
+    secondCard = { src: '', id: '' },
     output = '',
     defCard = 'secret.png',
     HTMLstart = document.getElementById('start'),
@@ -43,14 +43,18 @@ function init(){
 
 // Run both timers
 function runTimers(){
-    HTMLstart.style.display = 'none';
+    // HTMLstart.style.display = 'none';
+    HTMLstart.style.backgroundColor = '#34495e';
+    HTMLstart.style.color = '#ffffff';
+    HTMLstart.style.cursor = 'not-allowed';
+    HTMLstart.innerHTML = 'playing';
     gameStarted = true;
     var aC;
     
-    for(let x=0 ; x<4 ; x++){
+    for(let x=0 ; x<5 ; x++){
         setTimeout(function(){
             for(let y=0 ; y<cardsAmount ; y++){
-                if(x < 3)
+                if(x < 4)
                     aC = animateCards();
 
                 else {
@@ -67,7 +71,14 @@ function runTimers(){
 
         animDelay += 500;
     }
-        
+
+    setTimeout(function(){
+        for(let y=0 ; y<cardsAmount ; y++){
+            document.getElementById(y).style.boxShadow = '1.5px 1.5px 6px rgba(0, 0, 0, 0.06)';
+            document.getElementById(y).style.zIndex = '0';
+        }
+    }, animDelay);
+
     animDelay = 0;
     runTimer();
     runMilTimer();
@@ -90,7 +101,7 @@ function shuffleCards(cards) {
 function animateCards(){
     var top = Math.floor(Math.random() * (sH - 50) - 50),
         left = Math.floor(Math.random() * (sW - 50) - 50),
-        r = Math.floor(Math.random() * (180 - 1) - 1);
+        r = Math.floor(Math.random() * (360 - 1) - 1);
 
     return [top, left, r];
 }
@@ -196,19 +207,20 @@ function runTimer(){
     setTimeout(function(){
         timerGame = setInterval(function(){
             newSecs++;
-    
+            
             if(newSecs < 10) newSecs = `0${newSecs}`;
     
+            if(newMins > 9) output = `${newMins}:${newSecs}`; 
+
             if(newSecs > 59){
                 newSecs = 0;
                 newMins++;
             }
     
             let output = `0${newMins}:${newSecs}`;
-    
             HTMLtimeMain.innerHTML = output;
         }, 1000);
-    }, 2000);
+    }, 2500);
 }
 
 function runMilTimer(){

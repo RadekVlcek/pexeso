@@ -7,10 +7,11 @@ html, body {
 
 /* CARDS */
 ul#target {
-
+    
 }
 
 ul#target li {
+    z-index: -1;
     display: inline-block;
     width: 85px;
     height: 85px;
@@ -23,7 +24,8 @@ ul#target li {
     border: 1px solid #e6e6e6;
     border-radius: 1.5px;
     cursor: pointer;
-    transition: transform .5s, opacity .15s, top .5s, left .5s;;
+    box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.06);
+    transition: transform .5s, opacity .15s, box-shadow .5s, top .5s, left .5s;
     position: relative;
 }
 
@@ -32,6 +34,13 @@ ul#target li:hover {
 }
 
 /* TIME */
+#time {
+    border: 1.2px solid #34495e;
+    width: 100px;
+    padding: 1px 0px 1px 11px;
+    background: #ffffff;
+}
+
 #time #main, #time #mili {
     display: inline-block;
 }
@@ -43,4 +52,45 @@ ul#target li:hover {
 #time #mili {
     font-size: 15px;
     vertical-align: top;
+}
+
+/* START BUTTON */
+#start {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    background: #ffffff;
+    border: 1.2px solid #34495e;
+    padding: 9.5px 20px 9.5px 20px;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 1px;
+    position: relative;
+    left: 5px;
+}
+
+#start:active {
+    background: #34495e;
+    color: #ffffff;
+}
+
+#start:focus {
+    outline: none;
+}
+
+/* START BUTTON & TIME */
+#start, #time {
+    color: #34495e;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* DETAILS */
+#details {
+    z-index: 1;
+    box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.14);
+}
+
+/* TARGET & DETAILS */
+#target, #details {
+    display: inline-block;
 }
