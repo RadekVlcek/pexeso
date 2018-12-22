@@ -2,7 +2,12 @@ html, body {
     margin: 0;
     padding: 0;
     max-width: 100%;
-    /* font-family: 'Orbitron', sans-serif; */
+    font-family: 'Roboto', sans-serif;
+}
+
+/* CARDS */
+ul#target {
+
 }
 
 ul#target li {
@@ -18,13 +23,15 @@ ul#target li {
     border: 1px solid #e6e6e6;
     border-radius: 1.5px;
     cursor: pointer;
-    transition: transform .15s, opacity .15s;
+    transition: transform .5s, opacity .15s, top .5s, left .5s;;
+    position: relative;
 }
 
 ul#target li:hover {
     border: 1px solid #cccccc;
 }
 
+/* TIME */
 #time #main, #time #mili {
     display: inline-block;
 }

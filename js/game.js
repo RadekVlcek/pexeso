@@ -5,12 +5,15 @@ var timerMatch,
     timerGame,
     isWaiting = false,
     lock = false,
-    inc = 0,
+    gameStarted = false,
     matches = 0,
     newSecs = 0,
     newMins = 0,
     newMils = 0,
+    animDelay = 0,
     cardsAmount = 36,
+    sH = screen.height/4.5,
+    sW = screen.width/3,
     cards1 = [],
     cards2 = [],
     sCards = [],
@@ -18,7 +21,6 @@ var timerMatch,
     secondCard = { src: '', id: '' },    
     output = '',
     defCard = 'secret.png',
-    sqrt = Math.sqrt(cardsAmount),
     HTMLstart = document.getElementById('start'),
     HTMLtarget = document.getElementById('target'),
     HTMLtime = document.getElementById('time'),
@@ -26,7 +28,48 @@ var timerMatch,
     HTMLtimeMili = document.getElementById('mili');
 
 function init(){
-    HTMLstart.addEventListener('click', prepCards);
+    for(let x=0 ; x<cardsAmount/2 ; x++){
+        cards1.push({src: x+1});
+        cards2.push({src: x+1});
+    }
+
+    // Merge both arrays and shuffle elements
+    sCards = shuffleCards(cards1.concat(cards2));
+
+    printCards();
+
+    HTMLstart.addEventListener('click', runTimers);
+}
+
+// Run both timers
+function runTimers(){
+    HTMLstart.style.display = 'none';
+    gameStarted = true;
+    
+    for(let x=0 ; x<3 ; x++){
+        setTimeout(function(){
+            for(let y=0 ; y<cardsAmount ; y++){
+                let aC = animateCards();
+                document.getElementById(y).style.top = `${aC[0]}px`;
+                document.getElementById(y).style.left = `${aC[1]}px`;
+                document.getElementById(y).style.transform = `rotate(${aC[2]}deg)`;
+            }
+        }, animDelay);
+
+        animDelay += 500;
+    }
+
+    setTimeout(function(){
+        for(let y=0 ; y<cardsAmount ; y++){
+            document.getElementById(y).style.top = '0px';
+            document.getElementById(y).style.left = '0px';
+            document.getElementById(y).style.transform = 'rotate(0deg)';
+        }
+    }, animDelay);
+        
+    animDelay = 0;
+    runTimer();
+    runMilTimer();
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -42,13 +85,28 @@ function shuffleCards(cards) {
     return cards;
 }
 
+// Get some random parameters to animate cards shuffle
+function animateCards(){
+    var top = Math.floor(Math.random() * (sH - 50) - 50),
+        left = Math.floor(Math.random() * (sW - 50) - 50),
+        r = Math.floor(Math.random() * (180 - 1) - 1);
+
+    return [top, left, r];
+}
+
 // Print cards
 function printCards(){
+    var inc = 0,
+        sqrt = Math.sqrt(cardsAmount);
+
     for(let row=0 ; row<sqrt ; row++){
         for(let col=0 ; col<sqrt ; col++){
-            output += `<li class="card" id=${inc} style="background-image:url('/cards/${defCard}');" onclick=playCard(id)></li>`;
+            var aC = animateCards();
+            output += `<li class="card" id=${inc} style="background-image:url('/cards/${defCard}'); top: ${aC[0]}px; left: ${aC[1]}px; transform: rotate(${aC[2]}deg)" onclick=playCard(id)></li>`;
+            aC[0] += 10;
             inc++;
         }
+        aC[1] += 30;
         output += '<br>';
     }
 
@@ -57,64 +115,78 @@ function printCards(){
 
 // Take action when clicked on a card
 function playCard(id){
-    if(!lock){
-        let getSrc = sCards[id].src;
+    if(gameStarted){
 
-        // First reveal the cards
-        document.getElementById(id).style.backgroundImage = `url(/cards/${getSrc}.png)`;
+        if(!lock){
+            let getSrc = sCards[id].src;
 
-        // Isn't waiting
-        if(!isWaiting){
-            firstCard.src = getSrc;
-            firstCard.id = id;
-            isWaiting = true;
-            return;
-        }
+            // First reveal the cards
+            document.getElementById(id).style.backgroundImage = `url(/cards/${getSrc}.png)`;
 
-        // Is waiting
-        else {
-            secondCard.src = getSrc;
-            secondCard.id = id;
+            // Isn't waiting
+            if(!isWaiting){
+                firstCard.src = getSrc;
+                firstCard.id = id;
+                isWaiting = true;
+                return;
+            }
 
-            // match
-            if(firstCard.src == secondCard.src){
-                if(firstCard.id != secondCard.id){
-                    matches++;
-                    lock = true;
-                    timerMatch = setTimeout(function(){
+            // Is waiting
+            else {
+                secondCard.src = getSrc;
+                secondCard.id = id;
 
-                        document.getElementById(firstCard.id).style.transform = 'skew(-0.06turn, 18deg)';
-                        document.getElementById(secondCard.id).style.transform = 'skew(-0.06turn, 18deg)';
-
-                        setTimeout(function(){
-                            document.getElementById(firstCard.id).style.opacity = '0';
-                            document.getElementById(secondCard  .id).style.opacity = '0';
-                        }, 50);
-
-                        setTimeout(function(){
-                            document.getElementById(firstCard.id).style.visibility = 'hidden';
-                            document.getElementById(secondCard.id).style.visibility = 'hidden';
-                        }, 150);
+                // match
+                if(firstCard.src == secondCard.src){
+                    if(firstCard.id != secondCard.id){
+                        matches++;
+                        console.log(matches);
                         
+                        if(matches == cardsAmount/2){
+                            // Game over
+                            console.log('Game over');
+                            clearInterval(timerGame);
+                        }
+
+                        lock = true;
+                        timerMatch = setTimeout(function(){
+
+                            document.getElementById(firstCard.id).style.transform = 'skew(-0.06turn, 18deg)';
+                            document.getElementById(secondCard.id).style.transform = 'skew(-0.06turn, 18deg)';
+
+                            setTimeout(function(){
+                                document.getElementById(firstCard.id).style.opacity = '0';
+                                document.getElementById(secondCard  .id).style.opacity = '0';
+                            }, 30);
+
+                            setTimeout(function(){
+                                document.getElementById(firstCard.id).style.visibility = 'hidden';
+                                document.getElementById(secondCard.id).style.visibility = 'hidden';
+                            }, 150);
+                            
+                            lock = false;
+                        }, 550);
+                    }
+
+                    else return;
+                }
+
+                // not match
+                else {
+                    lock = true;
+                    timerNotMatch = setTimeout(function(){
+                        document.getElementById(firstCard.id).style.backgroundImage = `url(/cards/${defCard})`;
+                        document.getElementById(secondCard.id).style.backgroundImage = `url(/cards/${defCard})`;
                         lock = false;
                     }, 700);
                 }
 
-                else return;
+                isWaiting = false;
             }
-
-            // not match
-            else {
-                lock = true;
-                timerNotMatch = setTimeout(function(){
-                    document.getElementById(firstCard.id).style.backgroundImage = `url(/cards/${defCard})`;
-                    document.getElementById(secondCard.id).style.backgroundImage = `url(/cards/${defCard})`;
-                    lock = false;
-                }, 700);
-            }
-
-            isWaiting = false;
         }
+
+        else return;
+
     }
 
     else return;
@@ -122,46 +194,33 @@ function playCard(id){
 
 // Run the timer
 function runTimer(){
-    timerGame = setInterval(function(){
-        newSecs++;
-
-        if(newSecs < 10) newSecs = `0${newSecs}`;
-
-        if(newSecs > 59){
-            newSecs = 0;
-            newMins++;
-        }
-
-        let output = `0${newMins}:${newSecs}`;
-
-        HTMLtimeMain.innerHTML = output;
-    }, 1000);
+    setTimeout(function(){
+        timerGame = setInterval(function(){
+            newSecs++;
+    
+            if(newSecs < 10) newSecs = `0${newSecs}`;
+    
+            if(newSecs > 59){
+                newSecs = 0;
+                newMins++;
+            }
+    
+            let output = `0${newMins}:${newSecs}`;
+    
+            HTMLtimeMain.innerHTML = output;
+        }, 1000);
+    }, 500);
 }
 
 function runMilTimer(){
-    setInterval(function(){
-        newMils++;
+    setTimeout(function(){
+        setInterval(function(){
+            newMils++;
 
-        if(newMils > 9) newMils = 0;
-        
-        HTMLtimeMili.innerHTML = newMils;
-    }, 100);
+            if(newMils > 9) newMils = 0;
+            
+            HTMLtimeMili.innerHTML = newMils;
+        }, 100);
+    }, 500);
 }
 
-// Prepare cards
-function prepCards(){
-    // HTMLstart.style.display = 'none';
-
-    runTimer();
-    runMilTimer();
-
-    for(let x=0 ; x<cardsAmount/2 ; x++){
-        cards1.push({src: x+1});
-        cards2.push({src: x+1});
-    }
-
-    // Merge both arrays and shuffle elements
-    sCards = shuffleCards(cards1.concat(cards2));
-
-    printCards();
-}
