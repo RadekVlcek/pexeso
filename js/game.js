@@ -38,11 +38,11 @@ function init(){
 
     printCards();
 
-    HTMLstart.addEventListener('click', runTimers);
+    HTMLstart.addEventListener('click', startGame);
 }
 
 // Run both timers
-function runTimers(){
+function startGame(){
     // HTMLstart.style.display = 'none';
     HTMLstart.style.backgroundColor = '#34495e';
     HTMLstart.style.color = '#ffffff';
@@ -101,7 +101,7 @@ function shuffleCards(cards) {
 function animateCards(){
     var top = Math.floor(Math.random() * (sH - 50) - 50),
         left = Math.floor(Math.random() * (sW - 50) - 50),
-        r = Math.floor(Math.random() * (360 - 1) - 1);
+        r = Math.floor(Math.random() * (540 - 1) - 1);
 
     return [top, left, r];
 }
@@ -209,8 +209,6 @@ function runTimer(){
             newSecs++;
             
             if(newSecs < 10) newSecs = `0${newSecs}`;
-    
-            if(newMins > 9) output = `${newMins}:${newSecs}`; 
 
             if(newSecs > 59){
                 newSecs = 0;

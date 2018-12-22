@@ -7,7 +7,8 @@ html, body {
 
 /* CARDS */
 ul#target {
-    
+    /* Fixed width must be here */
+    width: 616px;
 }
 
 ul#target li {
@@ -25,7 +26,7 @@ ul#target li {
     border-radius: 1.5px;
     cursor: pointer;
     box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.06);
-    transition: transform .5s, opacity .15s, box-shadow .5s, top .5s, left .5s;
+    transition: transform .45s, opacity .15s, box-shadow .6s, top .45s, left .45s;
     position: relative;
 }
 
@@ -60,7 +61,8 @@ ul#target li:hover {
     font-weight: bold;
     background: #ffffff;
     border: 1.2px solid #34495e;
-    padding: 9.5px 20px 9.5px 20px;
+    width: 85px;
+    padding: 9.5px 18px 9.5px 18px;
     font-size: 15px;
     cursor: pointer;
     border-radius: 1px;
