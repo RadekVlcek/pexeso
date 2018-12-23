@@ -27,6 +27,7 @@ var timerMatch,
     HTMLtime = document.getElementById('time'),
     HTMLtimeMain = document.getElementById('main'),
     HTMLtimeMili = document.getElementById('mili');
+    HTMLdetails = document.getElementById('details');
 
 function init(){
     for(let x=0 ; x<cardsAmount/2 ; x++){
@@ -44,11 +45,10 @@ function init(){
 
 // Run both timers
 function startGame(){
-    // HTMLstart.style.display = 'none';
     HTMLstart.style.backgroundColor = '#34495e';
     HTMLstart.style.color = '#ffffff';
     HTMLstart.style.cursor = 'not-allowed';
-    HTMLstart.innerHTML = 'playing';
+    HTMLstart.innerHTML = 'Shuffling';
     gameStarted = true;
     var aC;
 
@@ -78,9 +78,10 @@ function startGame(){
 
     setTimeout(function(){
         for(let y=0 ; y<cardsAmount ; y++){
-            document.getElementById(y).style.boxShadow = '1.5px 1.5px 6px rgba(0, 0, 0, 0.06)';
             document.getElementById(y).style.zIndex = '0';
         }
+
+        HTMLstart.innerHTML = 'Playing';
     }, animDelay);
 
     animDelay = 0;
@@ -118,7 +119,15 @@ function printCards(){
     for(let row=0 ; row<sqrt ; row++){
         for(let col=0 ; col<sqrt ; col++){
             var aC = animateCards();
-            output += `<li class="card" id=${inc} style="background-image:url('/cards/${defCard}'); top: ${aC[0]}px; left: ${aC[1]}px; transform: rotate(${aC[2]}deg)" onclick=playCard(id)></li>`;
+            output += `<li
+                            class="card"
+                            id=${inc}
+                            style="background-image:url('/cards/${defCard}');
+                            top: ${aC[0]}px;
+                            left: ${aC[1]}px;
+                            transform: rotate(${aC[2]}deg)"
+                            onclick=playCard(id)>
+                        </li>`;
             aC[0] += 10;
             inc++;
         }
@@ -195,9 +204,20 @@ function playCard(id){
                 // not match
                 else {
                     lock = true;
-                    timerNotMatch = setTimeout(function(){
-                        document.getElementById(firstCard.id).style.backgroundImage = `url(/cards/${defCard})`;
-                        document.getElementById(secondCard.id).style.backgroundImage = `url(/cards/${defCard})`;
+                    var fC = document.getElementById(firstCard.id),
+                        sC = document.getElementById(secondCard.id);
+                    
+                    timerNotMatch = setTimeout(function(){    
+                        fC.style.transform = 'rotate(35deg)';
+                        sC.style.transform = 'rotate(35deg)';
+
+                        setTimeout(function(){
+                            fC.style.backgroundImage = `url(/cards/${defCard})`;
+                            sC.style.backgroundImage = `url(/cards/${defCard})`;
+                            fC.style.transform = 'rotate(0deg)';
+                            sC.style.transform = 'rotate(0deg)';
+                        }, 60);
+                        
                         lock = false;
                     }, 700);
                 }
@@ -218,7 +238,7 @@ function runTimer(){
         runTimer = setInterval(function(){
             newSecs++;
             
-            if(newSecs < 10) newSecs = `0${newSecs}`;
+            if(newSecs == 0 || newSecs < 10) newSecs = `0${newSecs}`;
 
             if(newSecs > 59){
                 newSecs = 0;

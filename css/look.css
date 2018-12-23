@@ -9,10 +9,13 @@ html, body {
 ul#target {
     /* Fixed width must be here */
     width: 616px;
+    /* filter: blur(2px);
+    opacity: .6; */
 }
 
 ul#target li {
     z-index: -1;
+    
     display: inline-block;
     width: 85px;
     height: 85px;
@@ -25,7 +28,7 @@ ul#target li {
     border: 1px solid #e6e6e6;
     border-radius: 1.5px;
     cursor: pointer;
-    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.16);
+    box-shadow: 1.5px 1.5px 6px rgba(0, 0, 0, 0.06);
     transition: transform .45s, opacity .15s, box-shadow .6s, top .45s, left .45s;
     position: relative;
 }
@@ -61,7 +64,7 @@ ul#target li:hover {
     font-weight: bold;
     background: #ffffff;
     border: 1.2px solid #34495e;
-    width: 85px;
+    width: 96px;
     padding: 9.5px 18px 10px 18px;
     font-size: 15px;
     cursor: pointer;
@@ -89,6 +92,12 @@ ul#target li:hover {
 /* DETAILS */
 #details {
     z-index: 1;
+    vertical-align: top;
+    transition: transform .45s, top .45s, left .45s;
+}
+
+#details h2 {
+
 }
 
 /* TARGET & DETAILS */
