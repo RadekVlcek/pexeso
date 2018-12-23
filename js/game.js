@@ -2,7 +2,8 @@ window.onload = init;
 
 var timerMatch,
     timerNotMatch,
-    timerGame,
+    runTimer,
+    runMilTimer,
     isWaiting = false,
     lock = false,
     gameStarted = false,
@@ -50,6 +51,9 @@ function startGame(){
     HTMLstart.innerHTML = 'playing';
     gameStarted = true;
     var aC;
+
+    clearInterval(runTimer);
+    clearInterval(runMilTimer);
     
     for(let x=0 ; x<5 ; x++){
         setTimeout(function(){
@@ -132,7 +136,12 @@ function playCard(id){
             let getSrc = sCards[id].src;
 
             // First reveal the cards
-            document.getElementById(id).style.backgroundImage = `url(/cards/${getSrc}.png)`;
+            document.getElementById(id).style.transform = 'rotate(35deg)';
+
+            setTimeout(function(){
+                document.getElementById(id).style.backgroundImage = `url(/cards/${getSrc}.png)`;
+                document.getElementById(id).style.transform = 'rotate(0deg)';
+            }, 60);
 
             // Isn't waiting
             if(!isWaiting){
@@ -156,7 +165,8 @@ function playCard(id){
                         if(matches == cardsAmount/2){
                             // Game over
                             console.log('Game over');
-                            clearInterval(timerGame);
+                            clearInterval(runTimer);
+                            clearInterval(runMilTimer);
                         }
 
                         lock = true;
@@ -205,7 +215,7 @@ function playCard(id){
 // Run the timer
 function runTimer(){
     setTimeout(function(){
-        timerGame = setInterval(function(){
+        runTimer = setInterval(function(){
             newSecs++;
             
             if(newSecs < 10) newSecs = `0${newSecs}`;
@@ -223,7 +233,7 @@ function runTimer(){
 
 function runMilTimer(){
     setTimeout(function(){
-        setInterval(function(){
+        runMilTimer = setInterval(function(){
             newMils++;
 
             if(newMils > 9) newMils = 0;
