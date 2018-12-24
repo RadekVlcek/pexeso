@@ -23,6 +23,8 @@ var timerMatch,
     output = '',
     defCard = 'secret.png',
     HTMLstart = document.getElementById('start'),
+    HTMLshuffling = document.getElementById('shuffling'),
+    HTMLstop = document.getElementById('stop'),
     HTMLtarget = document.getElementById('target'),
     HTMLtime = document.getElementById('time'),
     HTMLtimeMain = document.getElementById('main'),
@@ -41,14 +43,17 @@ function init(){
     printCards();
 
     HTMLstart.addEventListener('click', startGame);
+    HTMLstop.addEventListener('click', stopGame);
 }
 
 // Run both timers
 function startGame(){
-    HTMLstart.style.backgroundColor = '#34495e';
-    HTMLstart.style.color = '#ffffff';
-    HTMLstart.style.cursor = 'not-allowed';
-    HTMLstart.innerHTML = 'Shuffling';
+    HTMLstart.style.display = 'none';
+    HTMLshuffling.innerHTML = 'Shuffling';
+    HTMLshuffling.style.backgroundColor = '#34495e';
+    HTMLshuffling.style.color = '#ffffff';
+    HTMLshuffling.style.display = 'inline-block';
+
     gameStarted = true;
     var aC;
 
@@ -81,12 +86,19 @@ function startGame(){
             document.getElementById(y).style.zIndex = '0';
         }
 
-        HTMLstart.innerHTML = 'Playing';
+        HTMLshuffling.style.display = 'none';
+        HTMLstop.style.backgroundColor = '#34495e';
+        HTMLstop.style.color = '#ffffff';
+        HTMLstop.style.display = 'inline-block';
+        runTimer();
+        runMilTimer();
     }, animDelay);
 
     animDelay = 0;
-    runTimer();
-    runMilTimer();
+}
+
+function stopGame(){
+    console.log('game stopped');
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -173,7 +185,6 @@ function playCard(id){
                         
                         if(matches == cardsAmount/2){
                             // Game over
-                            console.log('Game over');
                             clearInterval(runTimer);
                             clearInterval(runMilTimer);
                         }
@@ -234,32 +245,34 @@ function playCard(id){
 
 // Run the timer
 function runTimer(){
-    setTimeout(function(){
-        runTimer = setInterval(function(){
-            newSecs++;
-            
-            if(newSecs == 0 || newSecs < 10) newSecs = `0${newSecs}`;
+    runTimer = setInterval(function(){
+        newSecs++;
+        
+        if(newSecs < 10) newSecs = `0${newSecs}`;
 
-            if(newSecs > 59){
-                newSecs = 0;
-                newMins++;
-            }
-    
-            let output = `0${newMins}:${newSecs}`;
-            HTMLtimeMain.innerHTML = output;
-        }, 1000);
-    }, 2500);
+        if(newSecs > 59){
+            newSecs = 0;
+            newMins++;
+        }
+
+        if(newMins == 10){
+            clearInterval(runTimer);
+            clearInterval(runMilTimer);
+            console.log('timer finished..');
+        }
+
+        let output = `0${newMins}:${newSecs}`;
+        HTMLtimeMain.innerHTML = output;
+    }, 1000);
 }
 
 function runMilTimer(){
-    setTimeout(function(){
-        runMilTimer = setInterval(function(){
-            newMils++;
+    runMilTimer = setInterval(function(){
+        newMils++;
 
-            if(newMils > 9) newMils = 0;
-            
-            HTMLtimeMili.innerHTML = newMils;
-        }, 100);
-    }, 2500);
+        if(newMils > 9) newMils = 0;
+        
+        HTMLtimeMili.innerHTML = newMils;
+    }, 100);
 }
 

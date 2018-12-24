@@ -9,8 +9,6 @@ html, body {
 ul#target {
     /* Fixed width must be here */
     width: 616px;
-    /* filter: blur(2px);
-    opacity: .6; */
 }
 
 ul#target li {
@@ -37,16 +35,23 @@ ul#target li:hover {
     border: 1px solid #cccccc;
 }
 
+/* DETAILS */
+#details {
+    z-index: 1;
+    vertical-align: top;
+    transition: transform .45s, top .45s, left .45s;
+}
+
+#details h2 {
+    color: #34495e;
+}
+
 /* TIME */
 #time {
     border: 1.2px solid #34495e;
     width: 100px;
     padding: 1px 0px 1px 11px;
     background: #ffffff;
-}
-
-#time #main, #time #mili {
-    display: inline-block;
 }
 
 #time #main {
@@ -58,13 +63,22 @@ ul#target li:hover {
     vertical-align: top;
 }
 
+#time #main, #time #mili {
+    display: inline-block;
+}
+
 /* START BUTTON */
-#start {
+#stop, #shuffling {
+    display: none;
+}
+
+#start, #stop, #shuffling {
+    text-align: center;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     background: #ffffff;
     border: 1.2px solid #34495e;
-    width: 96px;
+    width: 60px;
     padding: 9.5px 18px 10px 18px;
     font-size: 15px;
     cursor: pointer;
@@ -79,7 +93,7 @@ ul#target li:hover {
     color: #ffffff;
 }
 
-#start:focus {
+#start:focus, #stop:focus {
     outline: none;
 }
 
@@ -87,17 +101,6 @@ ul#target li:hover {
 #start, #time {
     color: #34495e;
     display: inline-block;
-}
-
-/* DETAILS */
-#details {
-    z-index: 1;
-    vertical-align: top;
-    transition: transform .45s, top .45s, left .45s;
-}
-
-#details h2 {
-
 }
 
 /* TARGET & DETAILS */
