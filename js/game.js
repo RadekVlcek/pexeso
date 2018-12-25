@@ -2,8 +2,8 @@ window.onload = init;
 
 var timerMatch,
     timerNotMatch,
-    runTimer,
-    runMilTimer,
+    timer,
+    milTimer,
     isWaiting = false,
     lock = false,
     gameStarted = false,
@@ -53,12 +53,15 @@ function startGame(){
     HTMLshuffling.style.backgroundColor = '#34495e';
     HTMLshuffling.style.color = '#ffffff';
     HTMLshuffling.style.display = 'inline-block';
-
     gameStarted = true;
     var aC;
 
-    clearInterval(runTimer);
-    clearInterval(runMilTimer);
+    // Reset timer values
+    newSecs = 0;
+    newMins = 0;
+    newMils = 0;
+    HTMLtimeMain.innerHTML = `0${newMins}:0${newSecs}`;
+    HTMLtimeMili.innerHTML = newMils;
     
     for(let x=0 ; x<5 ; x++){
         setTimeout(function(){
@@ -82,10 +85,6 @@ function startGame(){
     }
 
     setTimeout(function(){
-        for(let y=0 ; y<cardsAmount ; y++){
-            document.getElementById(y).style.zIndex = '0';
-        }
-
         HTMLshuffling.style.display = 'none';
         HTMLstop.style.backgroundColor = '#34495e';
         HTMLstop.style.color = '#ffffff';
@@ -95,10 +94,21 @@ function startGame(){
     }, animDelay);
 
     animDelay = 0;
-}
+}   
 
 function stopGame(){
-    console.log('game stopped');
+    gameStarted = false;
+    clearTimers();
+
+    for(let x=0 ; x<cardsAmount ; x++){
+        let aC = animateCards();
+        document.getElementById(x).style.top = `${aC[0]}px`;
+        document.getElementById(x).style.left = `${aC[1]}px`;
+        document.getElementById(x).style.transform = `rotate(${aC[2]}deg)`;
+    }
+
+    HTMLstop.style.display = 'none';
+    HTMLstart.style.display = 'inline-block';
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -185,8 +195,7 @@ function playCard(id){
                         
                         if(matches == cardsAmount/2){
                             // Game over
-                            clearInterval(runTimer);
-                            clearInterval(runMilTimer);
+                            clearTimers();
                         }
 
                         lock = true;
@@ -243,9 +252,8 @@ function playCard(id){
     else return;
 }
 
-// Run the timer
 function runTimer(){
-    runTimer = setInterval(function(){
+    timer = setInterval(function(){
         newSecs++;
         
         if(newSecs < 10) newSecs = `0${newSecs}`;
@@ -256,9 +264,7 @@ function runTimer(){
         }
 
         if(newMins == 10){
-            clearInterval(runTimer);
-            clearInterval(runMilTimer);
-            console.log('timer finished..');
+            clearTimers();
         }
 
         let output = `0${newMins}:${newSecs}`;
@@ -267,7 +273,7 @@ function runTimer(){
 }
 
 function runMilTimer(){
-    runMilTimer = setInterval(function(){
+    milTimer = setInterval(function(){
         newMils++;
 
         if(newMils > 9) newMils = 0;
@@ -276,3 +282,7 @@ function runMilTimer(){
     }, 100);
 }
 
+function clearTimers(){
+    clearInterval(timer);
+    clearInterval(milTimer);
+}

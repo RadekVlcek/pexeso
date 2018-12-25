@@ -9,11 +9,10 @@ html, body {
 ul#target {
     /* Fixed width must be here */
     width: 616px;
+    margin: 5px;
 }
 
 ul#target li {
-    z-index: -1;
-    
     display: inline-block;
     width: 85px;
     height: 85px;
@@ -37,6 +36,7 @@ ul#target li:hover {
 
 /* DETAILS */
 #details {
+    margin: 0px 0px 0px 10px;
     z-index: 1;
     vertical-align: top;
     transition: transform .45s, top .45s, left .45s;
@@ -44,6 +44,7 @@ ul#target li:hover {
 
 #details h2 {
     color: #34495e;
+    margin: 8px 0px 8px 8px;
 }
 
 /* TIME */
