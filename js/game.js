@@ -18,6 +18,7 @@ var timerMatch,
     cards1 = [],
     cards2 = [],
     sCards = [],
+    visibleAgain = [],
     firstCard = { src: '', id: '' },
     secondCard = { src: '', id: '' },
     output = '',
@@ -56,7 +57,7 @@ function startGame(){
     gameStarted = true;
     var aC;
 
-    // Reset timer values
+    // Reset timers and print zeros
     newSecs = 0;
     newMins = 0;
     newMils = 0;
@@ -98,7 +99,17 @@ function startGame(){
 
 function stopGame(){
     gameStarted = false;
+    output = '';
     clearTimers();
+
+    for(let x=0 ; x<visibleAgain.length ; x++){
+        document.getElementById(visibleAgain[x]).style.visibility = 'visible';
+        document.getElementById(visibleAgain[x]).style.opacity = '1';
+        document.getElementById(visibleAgain[x]).style.backgroundImage = `url(/cards/${defCard})`;
+    }
+
+    // Merge both arrays and shuffle elements
+    sCards = shuffleCards(cards1.concat(cards2));
 
     for(let x=0 ; x<cardsAmount ; x++){
         let aC = animateCards();
@@ -109,6 +120,9 @@ function stopGame(){
 
     HTMLstop.style.display = 'none';
     HTMLstart.style.display = 'inline-block';
+
+    // HTMLtimeMain.style.transform = 'translate(0px, 35px)';
+    // HTMLtimeMili.style.transform = 'translate(0px, 35px)';
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -192,6 +206,9 @@ function playCard(id){
                     if(firstCard.id != secondCard.id){
                         matches++;
                         console.log(matches);
+
+                        visibleAgain.push(firstCard.id);
+                        visibleAgain.push(secondCard.id);
                         
                         if(matches == cardsAmount/2){
                             // Game over
