@@ -66,6 +66,7 @@ ul#target li:hover {
 
 #time #main, #time #mili {
     display: inline-block;
+    transition: transform .2s;
 }
 
 /* START BUTTON */
@@ -81,12 +82,12 @@ ul#target li:hover {
     border: 1.2px solid #34495e;
     width: 60px;
     padding: 9.5px 18px 10px 18px;
-    font-size: 15px;
+    font-size: 17px;
     cursor: pointer;
     border-radius: 1px;
     position: relative;
     left: 5px;
-    bottom: 6px;
+    bottom: 5px;
 }
 
 #start:hover {
