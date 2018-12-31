@@ -18,7 +18,7 @@ var timerMatch,
     cards1 = [],
     cards2 = [],
     sCards = [],
-    visibleAgain = [],
+    renewCards = [],
     firstCard = { src: '', id: '' },
     secondCard = { src: '', id: '' },
     output = '',
@@ -54,7 +54,7 @@ function startGame(){
     HTMLshuffling.style.backgroundColor = '#34495e';
     HTMLshuffling.style.color = '#ffffff';
     HTMLshuffling.style.display = 'inline-block';
-    gameStarted = true;
+    
     var aC;
 
     // Reset timers and print zeros
@@ -92,9 +92,11 @@ function startGame(){
         HTMLstop.style.display = 'inline-block';
         runTimer();
         runMilTimer();
+        gameStarted = true;
     }, animDelay);
 
     animDelay = 0;
+    
 }   
 
 function stopGame(){
@@ -102,13 +104,12 @@ function stopGame(){
     output = '';
     clearTimers();
 
-    for(let x=0 ; x<visibleAgain.length ; x++){
-        document.getElementById(visibleAgain[x]).style.visibility = 'visible';
-        document.getElementById(visibleAgain[x]).style.opacity = '1';
-        document.getElementById(visibleAgain[x]).style.backgroundImage = `url(/cards/${defCard})`;
+    for(let x=0 ; x<renewCards.length ; x++){
+        document.getElementById(renewCards[x]).style.visibility = 'visible';
+        document.getElementById(renewCards[x]).style.opacity = '1';
     }
 
-    // Merge both arrays and shuffle elements
+    // Shuffle cards again
     sCards = shuffleCards(cards1.concat(cards2));
 
     for(let x=0 ; x<cardsAmount ; x++){
@@ -116,6 +117,7 @@ function stopGame(){
         document.getElementById(x).style.top = `${aC[0]}px`;
         document.getElementById(x).style.left = `${aC[1]}px`;
         document.getElementById(x).style.transform = `rotate(${aC[2]}deg)`;
+        document.getElementById(x).style.backgroundImage = `url(/cards/${defCard})`;
     }
 
     HTMLstop.style.display = 'none';
@@ -207,8 +209,8 @@ function playCard(id){
                         matches++;
                         console.log(matches);
 
-                        visibleAgain.push(firstCard.id);
-                        visibleAgain.push(secondCard.id);
+                        renewCards.push(firstCard.id);
+                        renewCards.push(secondCard.id);
                         
                         if(matches == cardsAmount/2){
                             // Game over
