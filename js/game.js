@@ -12,7 +12,7 @@ var timerMatch,
     newMins = 0,
     newMils = 0,
     animDelay = 0,
-    cardsAmount = 36,
+    cardsAmount = 4,
     sH = screen.height/4.5,
     sW = screen.width/3,
     cards1 = [],
@@ -33,7 +33,9 @@ var timerMatch,
     HTMLdetails = document.getElementById('details'),
     shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3');
     shuffleStopAudio = 'will be added here ;)';
-    clickFirstAudio = new Audio('/audio/ClickFirst.mp3')
+    clickFirstAudio = new Audio('/audio/ClickFirst.mp3');
+    cardsMatchAudio = new Audio('/audio/MatchAudio.mp3');
+    cardsFaultAudio = new Audio('/audio/FaultAudio.mp3');
 
 function init(){
     for(let x=0 ; x<cardsAmount/2 ; x++){
@@ -50,14 +52,12 @@ function init(){
     HTMLstop.addEventListener('click', stopGame);
 }
 
-// Run both timers
 function startGame(){
     HTMLstart.style.display = 'none';
     HTMLshuffling.innerHTML = 'Shuffling';
     HTMLshuffling.style.backgroundColor = '#34495e';
     HTMLshuffling.style.color = '#ffffff';
     HTMLshuffling.style.display = 'inline-block';
-    
     matches = 0;
     var aC;
 
@@ -65,8 +65,8 @@ function startGame(){
     newSecs = 0;
     newMins = 0;
     newMils = 0;
-    HTMLtimeMain.innerHTML = `0${newMins}:0${newSecs}`;
-    HTMLtimeMili.innerHTML = newMils;
+    HTMLtimeMain.innerHTML = '00:00';
+    HTMLtimeMili.innerHTML = '0';
     
     for(let x=0 ; x<5 ; x++){
         setTimeout(function(){
@@ -101,7 +101,7 @@ function startGame(){
 
 function stopGame(){
     gameStarted = false;
-    isWaiting = false;
+    if(isWaiting) isWaiting = false;
     output = '';
     clearTimers();
 
@@ -144,7 +144,7 @@ function shuffleCards(cards) {
     return cards;
 }
 
-// Get some random parameters to animate cards shuffle
+// Get some random parameters to animate cards as they shuffle
 function animateCards(){
     var top = Math.floor(Math.random() * (sH - 50) - 50),
         left = Math.floor(Math.random() * (sW - 50) - 50),
@@ -222,14 +222,17 @@ function playCard(id){
                         
                         if(matches == cardsAmount/2){
                             // Game over
+                            // HTMLtarget.innerHTML = '<h1>Congratulations!</h1><h3>Feel free to play again and improve your memory!</h3>'
                             clearTimers();
                         }
 
                         lock = true;
                         timerMatch = setTimeout(function(){
-
                             document.getElementById(firstCard.id).style.transform = 'skew(-0.06turn, 18deg)';
                             document.getElementById(secondCard.id).style.transform = 'skew(-0.06turn, 18deg)';
+                            
+                            // Play audio
+                            cardsMatchAudio.play();
 
                             setTimeout(function(){
                                 document.getElementById(firstCard.id).style.opacity = '0';
@@ -254,9 +257,12 @@ function playCard(id){
                     var fC = document.getElementById(firstCard.id),
                         sC = document.getElementById(secondCard.id);
                     
-                    timerNotMatch = setTimeout(function(){    
+                    timerNotMatch = setTimeout(function(){
                         fC.style.transform = 'rotate(35deg)';
                         sC.style.transform = 'rotate(35deg)';
+
+                        // Play audio
+                        cardsFaultAudio.play();
 
                         setTimeout(function(){
                             fC.style.backgroundImage = `url(/cards/${defCard})`;
