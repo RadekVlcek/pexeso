@@ -5,6 +5,19 @@ html, body {
     font-family: 'Roboto', sans-serif;
 }
 
+body {
+    background: linear-gradient(to left, rgb(255, 255, 255), rgb(242, 242, 242));
+}
+
+a {
+    text-decoration: none;
+    color: #f03434;
+}
+/* 
+a:hover {
+    color: red;
+} */
+
 /* CARDS */
 ul#target {
     /* Fixed width must be here */
@@ -28,6 +41,12 @@ ul#target li {
     box-shadow: 1.5px 1.5px 6px rgba(0, 0, 0, 0.06);
     transition: transform .45s, opacity .15s, box-shadow .6s, top .45s, left .45s;
     position: relative;
+}
+
+#radek-textsmaller {
+    font-size: 17.5px;
+    /* font-weight: normal; */
+    color: #eb100f;
 }
 
 ul#target li:hover {
@@ -108,4 +127,5 @@ ul#target li:hover {
 /* TARGET & DETAILS */
 #target, #details {
     display: inline-block;
+    margin: 5% 0% 0% 5% !important;
 }
