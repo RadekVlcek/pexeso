@@ -8,11 +8,12 @@ var timerMatch,
     lock = false,
     gameStarted = false,
     matches = 0,
+    faults = 0,
     newSecs = 0,
     newMins = 0,
     newMils = 0,
     animDelay = 0,
-    cardsAmount = 4,
+    cardsAmount = 36,
     sH = screen.height/4.5,
     sW = screen.width/3,
     cards1 = [],
@@ -22,6 +23,7 @@ var timerMatch,
     firstCard = { src: '', id: '' },
     secondCard = { src: '', id: '' },
     output = '',
+    timeOutput = '',
     defCard = 'secret.png',
     HTMLstart = document.getElementById('start'),
     HTMLshuffling = document.getElementById('shuffling'),
@@ -47,6 +49,17 @@ function init(){
     sCards = shuffleCards(cards1.concat(cards2));
 
     printCards();
+
+    // Initialize local storage
+    if(localStorage.getItem('history') === null){
+        // No history available, create a new array
+        localStorage.setItem('history', '[]');
+    }
+        
+    else {
+        let hold = JSON.parse(localStorage.getItem('history'));
+
+    }
 
     HTMLstart.addEventListener('click', startGame);
     HTMLstop.addEventListener('click', stopGame);
@@ -104,6 +117,13 @@ function stopGame(){
     if(isWaiting) isWaiting = false;
     output = '';
     clearTimers();
+    collectData(faults, timeOutput);
+
+    // Stop the following sounds if they were currently playing
+    cardsMatchAudio.pause();
+    cardsFaultAudio.pause();
+    cardsMatchAudio.currentTime = 0.0;
+    cardsFaultAudio.currentTime = 0.0;
 
     for(let x=0 ; x<renewCards.length ; x++){
         document.getElementById(renewCards[x]).style.visibility = 'visible';
@@ -180,6 +200,14 @@ function printCards(){
     HTMLtarget.innerHTML = output;
 }
 
+function collectData(f, tO){
+    // Send data to Local Storage
+    dataObj = { "faults": f, "timePlayed": tO };
+    let hold = JSON.parse(localStorage.getItem('history'));
+    hold.push(dataObj);
+    localStorage.setItem('history', JSON.stringify(hold));
+}
+
 // Take action when clicked on a card
 function playCard(id){
     if(gameStarted){
@@ -214,25 +242,28 @@ function playCard(id){
                 if(firstCard.src == secondCard.src){
                     if(firstCard.id != secondCard.id){
                         matches++;
-                        console.log(matches);
 
                         // These cards need to be renewed later
                         renewCards.push(firstCard.id);
                         renewCards.push(secondCard.id);
                         
+                        // If there are no cards left
                         if(matches == cardsAmount/2){
                             // Game over
+
+                            collectData(faults, timeOutput);
                             // HTMLtarget.innerHTML = '<h1>Congratulations!</h1><h3>Feel free to play again and improve your memory!</h3>'
                             clearTimers();
                         }
 
                         lock = true;
                         timerMatch = setTimeout(function(){
-                            document.getElementById(firstCard.id).style.transform = 'skew(-0.06turn, 18deg)';
-                            document.getElementById(secondCard.id).style.transform = 'skew(-0.06turn, 18deg)';
-                            
+
                             // Play audio
                             cardsMatchAudio.play();
+
+                            document.getElementById(firstCard.id).style.transform = 'skew(-0.06turn, 18deg)';
+                            document.getElementById(secondCard.id).style.transform = 'skew(-0.06turn, 18deg)';
 
                             setTimeout(function(){
                                 document.getElementById(firstCard.id).style.opacity = '0';
@@ -254,6 +285,8 @@ function playCard(id){
                 // not match
                 else {
                     lock = true;
+                    faults++;
+                    console.log(`Faults: ${faults}`);
                     var fC = document.getElementById(firstCard.id),
                         sC = document.getElementById(secondCard.id);
                     
@@ -300,8 +333,8 @@ function runTimer(){
             clearTimers();
         }
 
-        let output = `0${newMins}:${newSecs}`;
-        HTMLtimeMain.innerHTML = output;
+        timeOutput = `0${newMins}:${newSecs}`;
+        HTMLtimeMain.innerHTML = timeOutput;
     }, 1000);
 }
 
