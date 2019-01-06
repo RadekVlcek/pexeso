@@ -29,8 +29,11 @@ var timerMatch,
     HTMLtarget = document.getElementById('target'),
     HTMLtime = document.getElementById('time'),
     HTMLtimeMain = document.getElementById('main'),
-    HTMLtimeMili = document.getElementById('mili');
-    HTMLdetails = document.getElementById('details');
+    HTMLtimeMili = document.getElementById('mili'),
+    HTMLdetails = document.getElementById('details'),
+    shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3');
+    shuffleStopAudio = 'will be added here ;)';
+    clickFirstAudio = new Audio('/audio/ClickFirst.mp3')
 
 function init(){
     for(let x=0 ; x<cardsAmount/2 ; x++){
@@ -55,6 +58,7 @@ function startGame(){
     HTMLshuffling.style.color = '#ffffff';
     HTMLshuffling.style.display = 'inline-block';
     
+    matches = 0;
     var aC;
 
     // Reset timers and print zeros
@@ -67,19 +71,16 @@ function startGame(){
     for(let x=0 ; x<5 ; x++){
         setTimeout(function(){
             for(let y=0 ; y<cardsAmount ; y++){
-                if(x < 4)
-                    aC = animateCards();
-
-                else {
-                    aC[0] = 0;
-                    aC[1] = 0;
-                    aC[2] = 0; 
-                }
+                if(x < 4) aC = animateCards();
+                else { aC[0] = 0; aC[1] = 0; aC[2] = 0; }
 
                 document.getElementById(y).style.top = `${aC[0]}px`;
                 document.getElementById(y).style.left = `${aC[1]}px`;
                 document.getElementById(y).style.transform = `rotate(${aC[2]}deg)`;
             }
+
+            // Play sound
+            shuffleStartAudio.play();
         }, animDelay);
 
         animDelay += 500;
@@ -96,11 +97,11 @@ function startGame(){
     }, animDelay);
 
     animDelay = 0;
-    
-}   
+}
 
 function stopGame(){
     gameStarted = false;
+    isWaiting = false;
     output = '';
     clearTimers();
 
@@ -122,6 +123,9 @@ function stopGame(){
 
     HTMLstop.style.display = 'none';
     HTMLstart.style.display = 'inline-block';
+
+    // Play sound
+    shuffleStartAudio.play();
 
     // HTMLtimeMain.style.transform = 'translate(0px, 35px)';
     // HTMLtimeMili.style.transform = 'translate(0px, 35px)';
@@ -180,6 +184,9 @@ function printCards(){
 function playCard(id){
     if(gameStarted){
         if(!lock){
+            clickFirstAudio.pause();
+            clickFirstAudio.currentTime = 0.0;
+            clickFirstAudio.play();
             let getSrc = sCards[id].src;
 
             // First reveal the cards
@@ -209,6 +216,7 @@ function playCard(id){
                         matches++;
                         console.log(matches);
 
+                        // These cards need to be renewed later
                         renewCards.push(firstCard.id);
                         renewCards.push(secondCard.id);
                         
