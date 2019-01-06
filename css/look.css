@@ -137,8 +137,13 @@ ul#target li:hover {
 }
 
 table#history {
+    opacity: 0;
+    position: relative;
+    bottom: 100px;
+    z-index: -1;
     text-align: center;
     width: 100%;
+    transition: opacity .5s, bottom .5s;
 }
 
 table#history th {
@@ -159,5 +164,8 @@ table#history tr:not(:first-of-type):hover {
 #footer {
     font-size: 11px;
     text-align: center;
-    line-height: 4px;
+    line-height: 2px;
+    position: relative;
+    bottom: 100px;
+    transition: bottom .5s;
 }

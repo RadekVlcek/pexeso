@@ -29,7 +29,8 @@ var timerMatch,
     HTMLshuffling = document.getElementById('shuffling'),
     HTMLstop = document.getElementById('stop'),
     HTMLtarget = document.getElementById('target'),
-    HTMLhistory = document.getElementById('history');
+    HTMLhistory = document.getElementById('history'),
+    HTMLfooter = document.getElementById('footer');
     HTMLtime = document.getElementById('time'),
     HTMLtimeMain = document.getElementById('main'),
     HTMLtimeMili = document.getElementById('mili'),
@@ -70,6 +71,14 @@ function init(){
 }
 
 function startGame(){
+    // History slide up
+    HTMLhistory.style.zIndex = '-1';
+    HTMLhistory.style.opacity = '0';
+    HTMLhistory.style.bottom = '100px';
+
+    // Footer slide up
+    HTMLfooter.style.bottom = '100px';
+
     HTMLstart.style.display = 'none';
     HTMLshuffling.innerHTML = 'Shuffling';
     HTMLshuffling.style.backgroundColor = '#34495e';
@@ -155,8 +164,15 @@ function stopGame(){
     // Play sound
     shuffleStartAudio.play();
 
-    // HTMLtimeMain.style.transform = 'translate(0px, 35px)';
-    // HTMLtimeMili.style.transform = 'translate(0px, 35px)';
+    // History slide down
+    HTMLhistory.style.opacity = '1';
+    HTMLhistory.style.bottom = '0px';
+    setTimeout(function(){
+        HTMLhistory.style.zIndex = '1';
+    }, 500);
+
+    // Footer slide down
+    HTMLfooter.style.bottom = '0px';
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -325,7 +341,6 @@ function playCard(id){
                 else {
                     lock = true;
                     faults++;
-                    console.log(`Faults: ${faults}`);
                     var fC = document.getElementById(firstCard.id),
                         sC = document.getElementById(secondCard.id);
                     
@@ -359,7 +374,7 @@ function playCard(id){
 
 function runTimer(){
     timeOutput = '00:00';
-    
+
     timer = setInterval(function(){
         newSecs++;
         
