@@ -7,6 +7,7 @@ var timerMatch,
     isWaiting = false,
     lock = false,
     gameStarted = false,
+    allowToggle = false,
     matches = 0,
     faults = 0,
     newSecs = 0,
@@ -42,6 +43,8 @@ var timerMatch,
     cardsFaultAudio = new Audio('/audio/FaultAudio.mp3');
 
 function init(){
+    HTMLdetails.style.opacity = '1';
+
     for(let x=0 ; x<cardsAmount/2 ; x++){
         cards1.push({src: x+1});
         cards2.push({src: x+1});
@@ -71,9 +74,13 @@ function init(){
 }
 
 function startGame(){
+    allowToggle = false;
+    toggleHistory(allowToggle);
+    
     // History slide up
     HTMLhistory.style.zIndex = '-1';
     HTMLhistory.style.opacity = '0';
+    HTMLhistory.style.transition = 'opacity .2s, bottom .5s';
     HTMLhistory.style.bottom = '100px';
 
     // Footer slide up
@@ -126,6 +133,9 @@ function startGame(){
 }
 
 function stopGame(){
+    allowToggle = true;
+    toggleHistory(allowToggle);
+
     gameStarted = false;
     if(isWaiting) isWaiting = false;
     output = '';
@@ -167,6 +177,7 @@ function stopGame(){
     // History slide down
     HTMLhistory.style.opacity = '1';
     HTMLhistory.style.bottom = '0px';
+    HTMLhistory.style.transition = 'opacity 1s, bottom .5s';
     setTimeout(function(){
         HTMLhistory.style.zIndex = '1';
     }, 500);
@@ -251,7 +262,7 @@ function printCollectedData(data){
     }
 
     HTMLhistory.innerHTML = `
-        <tr><th>Faults made</th><th>Time played</th></tr>
+        <tr><th>Mistakes made</th><th>Time played</th></tr>
         ${output}
     `;
 }
@@ -260,6 +271,15 @@ function printCollectedData(data){
 function resetLocalStorate(){
     localStorage.setItem('history', '[]');
     HTMLhistory.innerHTML = 'No history available';
+}
+
+function toggleHistory(game){
+    console.log(game);
+    if(game){
+        console.log('Show history');
+    }
+    else
+        console.log('Hide history');
 }
 
 // Take action when clicked on a card
@@ -304,10 +324,14 @@ function playCard(id){
                         // If there are no cards left
                         if(matches == cardsAmount/2){
                             // Game over
+                            gameStarted = false;
 
                             collectData(faults, timeOutput);
+
                             faults = 0;
-                            // HTMLtarget.innerHTML = '<h1>Congratulations!</h1><h3>Feel free to play again and improve your memory!</h3>'
+
+                            toggleHistory(gameStarted);
+
                             clearTimers();
                         }
 

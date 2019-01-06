@@ -61,10 +61,11 @@ ul#target li:hover {
 
 /* DETAILS */
 #details {
+    opacity: 0;
     margin: 0px 0px 0px 10px;
     z-index: 1;
     vertical-align: top;
-    transition: transform .45s, top .45s, left .45s;
+    transition: transform .45s, opacity 1s, top .45s, left .45s;
 }
 
 #details h2 {
@@ -137,16 +138,19 @@ ul#target li:hover {
 }
 
 table#history {
-    opacity: 0;
+    /* margin: 10px 0px 20px 0px; */
+    opacity: 1;
     position: relative;
-    bottom: 100px;
-    z-index: -1;
+    bottom: 0px;
+    z-index: 0;
     text-align: center;
     width: 100%;
-    transition: opacity .5s, bottom .5s;
+    transition: opacity .7s, bottom .5s, margin .5s;
+    cursor: default;
 }
 
 table#history th {
+    opacity: .7;
     font-size: 11px;
 }
 
@@ -166,6 +170,6 @@ table#history tr:not(:first-of-type):hover {
     text-align: center;
     line-height: 2px;
     position: relative;
-    bottom: 100px;
+    bottom: 0px;
     transition: bottom .5s;
 }
