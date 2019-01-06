@@ -136,7 +136,28 @@ ul#target li:hover {
     margin: 5% 0% 0% 5% !important;
 }
 
+table#history {
+    text-align: center;
+    width: 100%;
+}
+
+table#history th {
+    font-size: 11px;
+}
+
+table#history tr:not(:first-of-type) {
+    font-size: 13px;
+    opacity: .6;
+    background: #ffffff;
+}
+
+table#history tr:not(:first-of-type):hover {
+    opacity: 1;
+    background: #f2f2f2;
+}
+
 #footer {
     font-size: 11px;
     text-align: center;
+    line-height: 4px;
 }

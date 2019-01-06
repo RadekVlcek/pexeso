@@ -29,6 +29,7 @@ var timerMatch,
     HTMLshuffling = document.getElementById('shuffling'),
     HTMLstop = document.getElementById('stop'),
     HTMLtarget = document.getElementById('target'),
+    HTMLhistory = document.getElementById('history');
     HTMLtime = document.getElementById('time'),
     HTMLtimeMain = document.getElementById('main'),
     HTMLtimeMili = document.getElementById('mili'),
@@ -48,17 +49,20 @@ function init(){
     // Merge both arrays and shuffle elements
     sCards = shuffleCards(cards1.concat(cards2));
 
+    // Yup, print cards...
     printCards();
 
-    // Initialize local storage
-    if(localStorage.getItem('history') === null){
-        // No history available, create a new array
-        localStorage.setItem('history', '[]');
-    }
+    var hold = localStorage.getItem('history');
+
+    // Initialize local storage if empty
+    if(hold === null)
+        resetLocalStorate();
         
     else {
-        let hold = JSON.parse(localStorage.getItem('history'));
-
+        if(hold == '[]')
+            HTMLhistory.innerHTML = 'No history available';
+        else
+            printCollectedData(JSON.parse(hold));
     }
 
     HTMLstart.addEventListener('click', startGame);
@@ -116,8 +120,12 @@ function stopGame(){
     gameStarted = false;
     if(isWaiting) isWaiting = false;
     output = '';
+
     clearTimers();
     collectData(faults, timeOutput);
+    printCollectedData(JSON.parse(localStorage.getItem('history')));
+
+    faults = 0;
 
     // Stop the following sounds if they were currently playing
     cardsMatchAudio.pause();
@@ -200,12 +208,42 @@ function printCards(){
     HTMLtarget.innerHTML = output;
 }
 
+// Send collected data to Local Storage
 function collectData(f, tO){
-    // Send data to Local Storage
+    // if(tO == '')
+    //     tO = '00:00';
+
     dataObj = { "faults": f, "timePlayed": tO };
     let hold = JSON.parse(localStorage.getItem('history'));
-    hold.push(dataObj);
+    
+    hold.unshift(dataObj);
+
+    if(hold.length > 5)
+        hold.pop();
+
     localStorage.setItem('history', JSON.stringify(hold));
+}
+
+// Print data from Local Storage previously collected
+function printCollectedData(data){
+    output = '';
+    for(let x=0 ; x<data.length ; x++){
+        output += `<tr>
+                        <td>${data[x].faults}</td>
+                        <td>${data[x].timePlayed}</td>
+                    </tr>`;
+    }
+
+    HTMLhistory.innerHTML = `
+        <tr><th>Faults made</th><th>Time played</th></tr>
+        ${output}
+    `;
+}
+
+// Reset Local Storage to empty array
+function resetLocalStorate(){
+    localStorage.setItem('history', '[]');
+    HTMLhistory.innerHTML = 'No history available';
 }
 
 // Take action when clicked on a card
@@ -252,6 +290,7 @@ function playCard(id){
                             // Game over
 
                             collectData(faults, timeOutput);
+                            faults = 0;
                             // HTMLtarget.innerHTML = '<h1>Congratulations!</h1><h3>Feel free to play again and improve your memory!</h3>'
                             clearTimers();
                         }
@@ -319,19 +358,21 @@ function playCard(id){
 }
 
 function runTimer(){
+    timeOutput = '00:00';
+    
     timer = setInterval(function(){
         newSecs++;
         
-        if(newSecs < 10) newSecs = `0${newSecs}`;
+        if(newSecs < 10)
+            newSecs = `0${newSecs}`;
 
         if(newSecs > 59){
             newSecs = 0;
             newMins++;
         }
 
-        if(newMins == 10){
+        if(newMins == 10)
             clearTimers();
-        }
 
         timeOutput = `0${newMins}:${newSecs}`;
         HTMLtimeMain.innerHTML = timeOutput;
