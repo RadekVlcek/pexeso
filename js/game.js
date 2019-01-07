@@ -31,11 +31,13 @@ var timerMatch,
     HTMLstop = document.getElementById('stop'),
     HTMLtarget = document.getElementById('target'),
     HTMLhistory = document.getElementById('history'),
+    HTMLhistoryWrap = document.getElementById('history-wrap'),
     HTMLfooter = document.getElementById('footer');
     HTMLtime = document.getElementById('time'),
     HTMLtimeMain = document.getElementById('main'),
     HTMLtimeMili = document.getElementById('mili'),
     HTMLdetails = document.getElementById('details'),
+    HTMLclearHistory = document.getElementById('clear-history'),
     shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3');
     shuffleStopAudio = 'will be added here ;)';
     clickFirstAudio = new Audio('/audio/ClickFirst.mp3');
@@ -63,36 +65,23 @@ function init(){
         resetLocalStorate();
         
     else {
-        if(hold == '[]')
-            HTMLhistory.innerHTML = 'No history available';
+        if(hold == '[]'){
+            HTMLhistory.innerHTML = '<p class="no-history-available">No history available</p>';
+            HTMLclearHistory.style.display = 'none';
+        }
+
         else
             printCollectedData(JSON.parse(hold));
     }
 
     HTMLstart.addEventListener('click', startGame);
     HTMLstop.addEventListener('click', stopGame);
+    HTMLclearHistory.addEventListener('click', clearHistory);
 }
 
 function startGame(){
     allowToggle = false;
     toggleHistory(allowToggle);
-    
-    // History slide up
-    HTMLhistory.style.zIndex = '-1';
-    HTMLhistory.style.opacity = '0';
-    HTMLhistory.style.transition = 'opacity .2s, bottom .5s';
-    HTMLhistory.style.bottom = '100px';
-
-    // Footer slide up
-    HTMLfooter.style.bottom = '100px';
-
-    HTMLstart.style.display = 'none';
-    HTMLshuffling.innerHTML = 'Shuffling';
-    HTMLshuffling.style.backgroundColor = '#34495e';
-    HTMLshuffling.style.color = '#ffffff';
-    HTMLshuffling.style.display = 'inline-block';
-    matches = 0;
-    var aC;
 
     // Reset timers and print zeros
     newSecs = 0;
@@ -101,6 +90,7 @@ function startGame(){
     HTMLtimeMain.innerHTML = '00:00';
     HTMLtimeMili.innerHTML = '0';
     
+    var aC;
     for(let x=0 ; x<5 ; x++){
         setTimeout(function(){
             for(let y=0 ; y<cardsAmount ; y++){
@@ -130,6 +120,28 @@ function startGame(){
     }, animDelay);
 
     animDelay = 0;
+
+    /* DOM manipulation, animations and sounds */
+    // History slide up
+    HTMLhistoryWrap.style.zIndex = '-1';
+    HTMLhistoryWrap.style.opacity = '0';
+    HTMLhistoryWrap.style.transition = 'opacity .2s, bottom .5s';
+    HTMLhistoryWrap.style.bottom = '100px';
+
+    // Footer fade out
+    HTMLfooter.style.right = '70px';
+    HTMLfooter.style.opacity = '0';
+    setTimeout(function(){
+        HTMLfooter.style.display = 'none';
+    }, 250);
+
+    // Other
+    HTMLstart.style.display = 'none';
+    HTMLshuffling.innerHTML = 'Shuffling';
+    HTMLshuffling.style.backgroundColor = '#34495e';
+    HTMLshuffling.style.color = '#ffffff';
+    HTMLshuffling.style.display = 'inline-block';
+    matches = 0;
 }
 
 function stopGame(){
@@ -141,7 +153,7 @@ function stopGame(){
     output = '';
 
     clearTimers();
-    collectData(faults, timeOutput);
+    collectData(matches, faults, timeOutput);
     printCollectedData(JSON.parse(localStorage.getItem('history')));
 
     faults = 0;
@@ -168,22 +180,32 @@ function stopGame(){
         document.getElementById(x).style.backgroundImage = `url(/cards/${defCard})`;
     }
 
+    /* DOM manipulation, animations and sounds */
+
+    // Show clear history button
+    HTMLclearHistory.style.display = 'inline-block';
+
+    // Swap Stop and Play buttons
     HTMLstop.style.display = 'none';
     HTMLstart.style.display = 'inline-block';
 
     // Play sound
     shuffleStartAudio.play();
 
-    // History slide down
-    HTMLhistory.style.opacity = '1';
-    HTMLhistory.style.bottom = '0px';
-    HTMLhistory.style.transition = 'opacity 1s, bottom .5s';
+    // Histore slide down
+    HTMLhistoryWrap.style.opacity = '1';
+    HTMLhistoryWrap.style.bottom = '0px';
+    HTMLhistoryWrap.style.transition = 'opacity 1s, bottom .5s';
     setTimeout(function(){
-        HTMLhistory.style.zIndex = '1';
+        HTMLhistoryWrap.style.zIndex = '1';
     }, 500);
 
-    // Footer slide down
-    HTMLfooter.style.bottom = '0px';
+    // Footer fade in
+    HTMLfooter.style.display = 'block';
+    setTimeout(function(){
+        HTMLfooter.style.opacity = '1';
+        HTMLfooter.style.right = '0px';
+    }, 0);
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -236,11 +258,8 @@ function printCards(){
 }
 
 // Send collected data to Local Storage
-function collectData(f, tO){
-    // if(tO == '')
-    //     tO = '00:00';
-
-    dataObj = { "faults": f, "timePlayed": tO };
+function collectData(m, f, tO){
+    dataObj = { "matches": m, "faults": f, "timePlayed": tO };
     let hold = JSON.parse(localStorage.getItem('history'));
     
     hold.unshift(dataObj);
@@ -256,13 +275,14 @@ function printCollectedData(data){
     output = '';
     for(let x=0 ; x<data.length ; x++){
         output += `<tr>
+                        <td>${data[x].matches}</td>
                         <td>${data[x].faults}</td>
                         <td>${data[x].timePlayed}</td>
                     </tr>`;
     }
 
     HTMLhistory.innerHTML = `
-        <tr><th>Mistakes made</th><th>Time played</th></tr>
+        <tr><th>Matches</th><th>Mistakes</th><th>Time played</th></tr>
         ${output}
     `;
 }
@@ -270,7 +290,7 @@ function printCollectedData(data){
 // Reset Local Storage to empty array
 function resetLocalStorate(){
     localStorage.setItem('history', '[]');
-    HTMLhistory.innerHTML = 'No history available';
+    HTMLhistory.innerHTML = '<p class="no-history-available">No history available</p>';
 }
 
 function toggleHistory(game){
@@ -280,6 +300,13 @@ function toggleHistory(game){
     }
     else
         console.log('Hide history');
+}
+
+function clearHistory(){
+    let hold = JSON.parse(localStorage.getItem('history'));
+    hold = [];
+    localStorage.setItem('history', JSON.stringify(hold));
+    location.reload();
 }
 
 // Take action when clicked on a card
@@ -326,7 +353,7 @@ function playCard(id){
                             // Game over
                             gameStarted = false;
 
-                            collectData(faults, timeOutput);
+                            collectData(matches, faults, timeOutput);
 
                             faults = 0;
 
