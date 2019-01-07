@@ -31,11 +31,13 @@ var timerMatch,
     HTMLstop = document.getElementById('stop'),
     HTMLtarget = document.getElementById('target'),
     HTMLhistory = document.getElementById('history'),
+    HTMLhistoryWrap = document.getElementById('history-wrap'),
     HTMLfooter = document.getElementById('footer');
     HTMLtime = document.getElementById('time'),
     HTMLtimeMain = document.getElementById('main'),
     HTMLtimeMili = document.getElementById('mili'),
     HTMLdetails = document.getElementById('details'),
+    HTMLclearHistory = document.getElementById('clear-history'),
     shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3');
     shuffleStopAudio = 'will be added here ;)';
     clickFirstAudio = new Audio('/audio/ClickFirst.mp3');
@@ -64,13 +66,14 @@ function init(){
         
     else {
         if(hold == '[]')
-            HTMLhistory.innerHTML = 'No history available';
+            HTMLhistory.innerHTML = '<p class="no-history-available">No history available</p>';
         else
             printCollectedData(JSON.parse(hold));
     }
 
     HTMLstart.addEventListener('click', startGame);
     HTMLstop.addEventListener('click', stopGame);
+    HTMLclearHistory.addEventListener('click', clearHistory);
 }
 
 function startGame(){
@@ -82,9 +85,6 @@ function startGame(){
     HTMLhistory.style.opacity = '0';
     HTMLhistory.style.transition = 'opacity .2s, bottom .5s';
     HTMLhistory.style.bottom = '100px';
-
-    // Footer slide up
-    HTMLfooter.style.bottom = '100px';
 
     HTMLstart.style.display = 'none';
     HTMLshuffling.innerHTML = 'Shuffling';
@@ -141,7 +141,7 @@ function stopGame(){
     output = '';
 
     clearTimers();
-    collectData(faults, timeOutput);
+    collectData(matches, faults, timeOutput);
     printCollectedData(JSON.parse(localStorage.getItem('history')));
 
     faults = 0;
@@ -181,9 +181,6 @@ function stopGame(){
     setTimeout(function(){
         HTMLhistory.style.zIndex = '1';
     }, 500);
-
-    // Footer slide down
-    HTMLfooter.style.bottom = '0px';
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -236,11 +233,8 @@ function printCards(){
 }
 
 // Send collected data to Local Storage
-function collectData(f, tO){
-    // if(tO == '')
-    //     tO = '00:00';
-
-    dataObj = { "faults": f, "timePlayed": tO };
+function collectData(m, f, tO){
+    dataObj = { "matches": m, "faults": f, "timePlayed": tO };
     let hold = JSON.parse(localStorage.getItem('history'));
     
     hold.unshift(dataObj);
@@ -256,13 +250,14 @@ function printCollectedData(data){
     output = '';
     for(let x=0 ; x<data.length ; x++){
         output += `<tr>
+                        <td>${data[x].matches}</td>
                         <td>${data[x].faults}</td>
                         <td>${data[x].timePlayed}</td>
                     </tr>`;
     }
 
     HTMLhistory.innerHTML = `
-        <tr><th>Mistakes made</th><th>Time played</th></tr>
+        <tr><th>Matches</th><th>Mistakes made</th><th>Time played</th></tr>
         ${output}
     `;
 }
@@ -270,7 +265,7 @@ function printCollectedData(data){
 // Reset Local Storage to empty array
 function resetLocalStorate(){
     localStorage.setItem('history', '[]');
-    HTMLhistory.innerHTML = 'No history available';
+    HTMLhistory.innerHTML = '<p class="no-history-available">No history available</p>';
 }
 
 function toggleHistory(game){
@@ -280,6 +275,13 @@ function toggleHistory(game){
     }
     else
         console.log('Hide history');
+}
+
+function clearHistory(){
+    let hold = JSON.parse(localStorage.getItem('history'));
+    hold = [];
+    localStorage.setItem('history', JSON.stringify(hold));
+    location.reload();
 }
 
 // Take action when clicked on a card
@@ -326,7 +328,7 @@ function playCard(id){
                             // Game over
                             gameStarted = false;
 
-                            collectData(faults, timeOutput);
+                            collectData(matches, faults, timeOutput);
 
                             faults = 0;
 

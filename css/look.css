@@ -137,13 +137,19 @@ ul#target li:hover {
     margin: 5% 0% 0% 5% !important;
 }
 
+/* History wrap */
+#history-wrap {
+    text-align: center;
+    margin: 0px 0px 20px 0px;
+}
+
 table#history {
-    /* margin: 10px 0px 20px 0px; */
+    margin: 5px 0px 3px 0px;
+    text-align: center;
     opacity: 1;
     position: relative;
     bottom: 0px;
     z-index: 0;
-    text-align: center;
     width: 100%;
     transition: opacity .7s, bottom .5s, margin .5s;
     cursor: default;
@@ -163,6 +169,25 @@ table#history tr:not(:first-of-type) {
 table#history tr:not(:first-of-type):hover {
     opacity: 1;
     background: #f2f2f2;
+}
+
+/* "No history available" message */
+.no-history-available {
+    font-size: 11px;
+    color: #999999;
+}
+
+/* Clear history button */
+#clear-history {
+    font-size: 11px;
+    color: #999999;
+    text-decoration: none;
+    border-bottom: 1px dashed #999999;
+}
+
+#clear-history:hover {
+    color: #000000;
+    border-bottom: 1px dashed #000000;
 }
 
 #footer {
