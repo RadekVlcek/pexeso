@@ -10,7 +10,6 @@ body {
 }
 
 a {
-    /* font-size: 12px; */
     text-decoration: none;
     color: #d64541;
 }
@@ -45,7 +44,13 @@ ul#target li {
     border: 1px solid #e6e6e6;
     border-radius: 1.5px;
     cursor: pointer;
+    -webkit-box-shadow: 1.5px 1.5px 6px rgba(0, 0, 0, 0.06);
+    -moz-box-shadow: 1.5px 1.5px 6px rgba(0, 0, 0, 0.06);
+    -ms-box-shadow: 1.5px 1.5px 6px rgba(0, 0, 0, 0.06);
     box-shadow: 1.5px 1.5px 6px rgba(0, 0, 0, 0.06);
+    -webkit-transition: transform .45s, opacity .15s, box-shadow .6s, top .45s, left .45s;
+    -moz-transition: transform .45s, opacity .15s, box-shadow .6s, top .45s, left .45s;
+    -ms-transition: transform .45s, opacity .15s, box-shadow .6s, top .45s, left .45s;
     transition: transform .45s, opacity .15s, box-shadow .6s, top .45s, left .45s;
     position: relative;
 }
@@ -65,6 +70,9 @@ ul#target li:hover {
     margin: 0px 0px 0px 10px;
     z-index: 1;
     vertical-align: top;
+    -webkit-transition: transform .45s, opacity 1s, top .45s, left .45s;
+    -moz-transition: transform .45s, opacity 1s, top .45s, left .45s;
+    -ms-transition: transform .45s, opacity 1s, top .45s, left .45s;
     transition: transform .45s, opacity 1s, top .45s, left .45s;
 }
 
@@ -92,6 +100,9 @@ ul#target li:hover {
 
 #time #main, #time #mili {
     display: inline-block;
+    -webkit-transition: transform .2s;
+    -moz-transition: transform .2s;
+    -ms-transition: transform .2s;
     transition: transform .2s;
 }
 
@@ -139,13 +150,15 @@ ul#target li:hover {
 
 /* Matches */
 #matches {
-    /* display: none; */
     text-align: center;
     font-size: 28px;
-    color: #bdcbdb;
+    color: #34495e;
     opacity: 0;
     position: relative;
     bottom: 0px;
+    -webkit-transition: opacity .5s, bottom .5s;
+    -moz-transition: opacity .5s, bottom .5s;
+    -ms-transition: opacity .5s, bottom .5s;
     transition: opacity .5s, bottom .5s;
 }
 
@@ -165,6 +178,9 @@ ul#target li:hover {
     bottom: 0px;
     opacity: 1;
     z-index: 0;
+    -webkit-transition: opacity .3s, bottom .5s, margin .5s;
+    -moz-transition: opacity .3s, bottom .5s, margin .5s;
+    -ms-transition: opacity .3s, bottom .5s, margin .5s;
     transition: opacity .3s, bottom .5s, margin .5s;
 }
 
@@ -218,5 +234,8 @@ table#history tr:not(:first-of-type):hover {
     line-height: 2px;
     position: relative;
     bottom: 0px;
+    -webkit-transition: bottom .5s, opacity .3s;
+    -moz-transition: bottom .5s, opacity .3s;
+    -ms-transition: bottom .5s, opacity .3s;
     transition: bottom .5s, opacity .3s;
 }
