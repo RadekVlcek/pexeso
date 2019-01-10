@@ -14,7 +14,7 @@ var timerMatch,
     newMins = 0,
     newMils = 0,
     animDelay = 0,
-    cardsAmount = 4,
+    cardsAmount = 36,
     sH = screen.height/4.5,
     sW = screen.width/3,
     cards1 = [],
@@ -148,7 +148,7 @@ function startGame(){
     HTMLmatches.innerHTML = `<h1><span id="matches-match ">${matches}</span>/${cardsAmount/2}</h1>`;
     HTMLmatches.style.display = 'block';
     setTimeout(function(){
-        HTMLmatches.style.opacity = '1';
+        HTMLmatches.style.opacity = '.3';
     }, 260);
 
     // Change value of "Start" button
@@ -163,15 +163,15 @@ function stopGame(){
     allowToggle = true;
     toggleHistory(allowToggle);
 
+    clearTimers();
+    collectData(matches, faults, timeOutput);
+    printCollectedData(JSON.parse(localStorage.getItem('history')));
+
     // Reset some values
     if(isWaiting) isWaiting = false;
     gameStarted = false;
     output = '';
     faults = 0;
-
-    clearTimers();
-    collectData(matches, faults, timeOutput);
-    printCollectedData(JSON.parse(localStorage.getItem('history')));
 
     // Stop the following sounds if they were currently playing
     cardsMatchAudio.pause();
@@ -383,7 +383,7 @@ function playCard(id){
                             // Game over
                             setTimeout(function(){
                                 HTMLstop.innerHTML = 'Restart';
-                            }, 1050);
+                            }, 1000);
 
                             gameStarted = false;
 
@@ -393,7 +393,6 @@ function playCard(id){
                             faults = 0;
 
                             toggleHistory(gameStarted);
-
                             clearTimers();
                         }
 
