@@ -14,7 +14,7 @@ var timerMatch,
     newMins = 0,
     newMils = 0,
     animDelay = 0,
-    cardsAmount = 36,
+    cardsAmount = 4,
     sH = screen.height/4.5,
     sW = screen.width/3,
     cards1 = [],
@@ -30,6 +30,8 @@ var timerMatch,
     HTMLshuffling = document.getElementById('shuffling'),
     HTMLstop = document.getElementById('stop'),
     HTMLtarget = document.getElementById('target'),
+    HTMLmatches = document.getElementById('matches'),
+    HTMLmatchesMatch = document.getElementById('matches-match');
     HTMLhistory = document.getElementById('history'),
     HTMLhistoryWrap = document.getElementById('history-wrap'),
     HTMLfooter = document.getElementById('footer');
@@ -43,6 +45,7 @@ var timerMatch,
     clickFirstAudio = new Audio('/audio/ClickFirst.mp3');
     cardsMatchAudio = new Audio('/audio/MatchAudio.mp3');
     cardsFaultAudio = new Audio('/audio/FaultAudio.mp3');
+    detailsSlideAudio = new Audio('/audio/DetailsSlide.mp3');
 
 function init(){
     HTMLdetails.style.opacity = '1';
@@ -89,74 +92,86 @@ function startGame(){
     newMils = 0;
     HTMLtimeMain.innerHTML = '00:00';
     HTMLtimeMili.innerHTML = '0';
-    
+
     var aC;
-    for(let x=0 ; x<5 ; x++){
+    setTimeout(function(){
+        for(let x=0 ; x<5 ; x++){
+            setTimeout(function(){
+                for(let y=0 ; y<cardsAmount ; y++){
+                    if(x < 4) aC = animateCards();
+                    else { aC[0] = 0; aC[1] = 0; aC[2] = 0; }
+
+                    document.getElementById(y).style.top = `${aC[0]}px`;
+                    document.getElementById(y).style.left = `${aC[1]}px`;
+                    document.getElementById(y).style.transform = `rotate(${aC[2]}deg)`;
+                }
+
+                // Play sound
+                shuffleStartAudio.play();
+            }, animDelay);
+
+            animDelay += 500;
+        }
+    
         setTimeout(function(){
-            for(let y=0 ; y<cardsAmount ; y++){
-                if(x < 4) aC = animateCards();
-                else { aC[0] = 0; aC[1] = 0; aC[2] = 0; }
-
-                document.getElementById(y).style.top = `${aC[0]}px`;
-                document.getElementById(y).style.left = `${aC[1]}px`;
-                document.getElementById(y).style.transform = `rotate(${aC[2]}deg)`;
-            }
-
-            // Play sound
-            shuffleStartAudio.play();
+            HTMLshuffling.style.display = 'none';
+            HTMLstop.innerHTML = 'Stop';
+            HTMLstop.style.backgroundColor = '#34495e';
+            HTMLstop.style.color = '#ffffff';
+            HTMLstop.style.display = 'inline-block';
+            runTimer();
+            runMilTimer();
+            gameStarted = true;
         }, animDelay);
 
-        animDelay += 500;
-    }
-
-    setTimeout(function(){
-        HTMLshuffling.style.display = 'none';
-        HTMLstop.style.backgroundColor = '#34495e';
-        HTMLstop.style.color = '#ffffff';
-        HTMLstop.style.display = 'inline-block';
-        runTimer();
-        runMilTimer();
-        gameStarted = true;
-    }, animDelay);
-
-    animDelay = 0;
+        animDelay = 0;
+    }, 400);
 
     /* DOM manipulation, animations and sounds */
     // History slide up
+    detailsSlideAudio.play();
     HTMLhistoryWrap.style.zIndex = '-1';
     HTMLhistoryWrap.style.opacity = '0';
     HTMLhistoryWrap.style.transition = 'opacity .2s, bottom .5s';
-    HTMLhistoryWrap.style.bottom = '100px';
+    HTMLhistoryWrap.style.bottom = '50px';
 
     // Footer fade out
-    HTMLfooter.style.right = '70px';
+    HTMLfooter.style.bottom = '50px';
     HTMLfooter.style.opacity = '0';
-    setTimeout(function(){
-        HTMLfooter.style.display = 'none';
-    }, 250);
 
-    // Other
+    setTimeout(function(){
+        HTMLhistoryWrap.style.display = 'none';
+        HTMLfooter.style.display = 'none';
+    }, 200);
+
+    // Matches
+    HTMLmatches.innerHTML = `<h1><span id="matches-match ">${matches}</span>/${cardsAmount/2}</h1>`;
+    HTMLmatches.style.display = 'block';
+    setTimeout(function(){
+        HTMLmatches.style.opacity = '1';
+    }, 260);
+
+    // Change value of "Start" button
     HTMLstart.style.display = 'none';
     HTMLshuffling.innerHTML = 'Shuffling';
     HTMLshuffling.style.backgroundColor = '#34495e';
     HTMLshuffling.style.color = '#ffffff';
     HTMLshuffling.style.display = 'inline-block';
-    matches = 0;
 }
 
 function stopGame(){
     allowToggle = true;
     toggleHistory(allowToggle);
 
-    gameStarted = false;
+    // Reset some values
     if(isWaiting) isWaiting = false;
+    gameStarted = false;
     output = '';
+    faults = 0;
 
     clearTimers();
     collectData(matches, faults, timeOutput);
     printCollectedData(JSON.parse(localStorage.getItem('history')));
-
-    faults = 0;
 
     // Stop the following sounds if they were currently playing
     cardsMatchAudio.pause();
@@ -172,6 +187,7 @@ function stopGame(){
     // Shuffle cards again
     sCards = shuffleCards(cards1.concat(cards2));
 
+    // Shuffle cards animation
     for(let x=0 ; x<cardsAmount ; x++){
         let aC = animateCards();
         document.getElementById(x).style.top = `${aC[0]}px`;
@@ -181,8 +197,14 @@ function stopGame(){
     }
 
     /* DOM manipulation, animations and sounds */
+    // Matches
+    HTMLmatches.innerHTML = `<h1><span id="matches-match ">${matches}</span>/${cardsAmount/2}</h1>`;
+    HTMLmatches.style.opacity = '0';
+    setTimeout(function(){
+        HTMLmatches.style.display = 'none';
+    }, 500);
 
-    // Show clear history button
+    // Show "clear history" button
     HTMLclearHistory.style.display = 'inline-block';
 
     // Swap Stop and Play buttons
@@ -192,20 +214,27 @@ function stopGame(){
     // Play sound
     shuffleStartAudio.play();
 
-    // Histore slide down
-    HTMLhistoryWrap.style.opacity = '1';
-    HTMLhistoryWrap.style.bottom = '0px';
-    HTMLhistoryWrap.style.transition = 'opacity 1s, bottom .5s';
+    // History & Footer slide down
     setTimeout(function(){
-        HTMLhistoryWrap.style.zIndex = '1';
-    }, 500);
+        detailsSlideAudio.play();
+        HTMLhistoryWrap.style.display = 'block';
+        HTMLfooter.style.display = 'block';
 
-    // Footer fade in
-    HTMLfooter.style.display = 'block';
-    setTimeout(function(){
-        HTMLfooter.style.opacity = '1';
-        HTMLfooter.style.right = '0px';
-    }, 0);
+        setTimeout(function(){
+            // For History
+            HTMLhistoryWrap.style.transition = 'opacity 1.2s, bottom .5s';
+            HTMLhistoryWrap.style.opacity = '1';
+            HTMLhistoryWrap.style.bottom = '0px';
+            HTMLhistoryWrap.style.zIndex = '1';
+
+            // For Footer
+            HTMLfooter.style.opacity = '1';
+            HTMLfooter.style.bottom = '0px';
+        }, 20);    
+
+        // Reset matches
+        matches = 0;
+    }, 400);
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
@@ -313,6 +342,7 @@ function clearHistory(){
 function playCard(id){
     if(gameStarted){
         if(!lock){
+            console.log(matches);
             clickFirstAudio.pause();
             clickFirstAudio.currentTime = 0.0;
             clickFirstAudio.play();
@@ -351,10 +381,15 @@ function playCard(id){
                         // If there are no cards left
                         if(matches == cardsAmount/2){
                             // Game over
+                            setTimeout(function(){
+                                HTMLstop.innerHTML = 'Restart';
+                            }, 1050);
+
                             gameStarted = false;
 
                             collectData(matches, faults, timeOutput);
 
+                            // Reset faults
                             faults = 0;
 
                             toggleHistory(gameStarted);
@@ -379,6 +414,9 @@ function playCard(id){
                             setTimeout(function(){
                                 document.getElementById(firstCard.id).style.visibility = 'hidden';
                                 document.getElementById(secondCard.id).style.visibility = 'hidden';
+
+                                // Update matches in HTML
+                                HTMLmatches.innerHTML = `<h1><span id="matches-match ">${matches}</span>/${cardsAmount/2}</h1>`;
                             }, 150);
                             
                             lock = false;
