@@ -254,6 +254,14 @@ table#history tr:not(:first-of-type):hover {
     transition: bottom .5s, opacity .3s;
 }
 
+#github-link {
+    opacity: 0.7;
+}
+
+#github-link:hover {
+    opacity: 0.5;
+}
+
 @media(max-width: 973px){
     #big-boss {
         display: none;
