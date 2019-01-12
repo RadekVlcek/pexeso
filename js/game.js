@@ -14,7 +14,7 @@ var timerMatch,
     newMins = 0,
     newMils = 0,
     animDelay = 0,
-    cardsAmount = 36,
+    cardsAmount = 4,
     sH = screen.height/4.5,
     sW = screen.width/3,
     cards1 = [],
@@ -31,7 +31,6 @@ var timerMatch,
     HTMLstop = document.getElementById('stop'),
     HTMLtarget = document.getElementById('target'),
     HTMLmatches = document.getElementById('matches'),
-    HTMLmatchesMatch = document.getElementById('matches-match');
     HTMLhistory = document.getElementById('history'),
     HTMLhistoryWrap = document.getElementById('history-wrap'),
     HTMLfooter = document.getElementById('footer');
@@ -40,11 +39,11 @@ var timerMatch,
     HTMLtimeMili = document.getElementById('mili'),
     HTMLdetails = document.getElementById('details'),
     HTMLclearHistory = document.getElementById('clear-history'),
-    shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3');
-    shuffleStopAudio = 'will be added here ;)';
-    clickFirstAudio = new Audio('/audio/ClickFirst.mp3');
-    cardsMatchAudio = new Audio('/audio/MatchAudio.mp3');
-    cardsFaultAudio = new Audio('/audio/FaultAudio.mp3');
+    HTMLendMessage = document.getElementById('end-message'),
+    shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3'),
+    clickFirstAudio = new Audio('/audio/ClickFirst.mp3'),
+    cardsMatchAudio = new Audio('/audio/MatchAudio.mp3'),
+    cardsFaultAudio = new Audio('/audio/FaultAudio.mp3'),
     detailsSlideAudio = new Audio('/audio/DetailsSlide.mp3');
 
 function init(){
@@ -83,9 +82,6 @@ function init(){
 }
 
 function startGame(){
-    allowToggle = false;
-    toggleHistory(allowToggle);
-
     // Reset timers and print zeros
     newSecs = 0;
     newMins = 0;
@@ -145,7 +141,7 @@ function startGame(){
     }, 200);
 
     // Matches
-    HTMLmatches.innerHTML = `<h1><span id="matches-match ">${matches}</span>/${cardsAmount/2}</h1>`;
+    HTMLmatches.innerHTML = `<h1>${matches}/${cardsAmount/2}</h1>`;
     HTMLmatches.style.display = 'block';
     setTimeout(function(){
         HTMLmatches.style.opacity = '.3';
@@ -160,9 +156,6 @@ function startGame(){
 }
 
 function stopGame(){
-    allowToggle = true;
-    toggleHistory(allowToggle);
-
     clearTimers();
     collectData(matches, faults, timeOutput);
     printCollectedData(JSON.parse(localStorage.getItem('history')));
@@ -178,27 +171,36 @@ function stopGame(){
     cardsFaultAudio.pause();
     cardsMatchAudio.currentTime = 0.0;
     cardsFaultAudio.currentTime = 0.0;
+    
+    setTimeout(function(){
+        // Re-print cards that previously guessed correctly
+        for(let x=0 ; x<renewCards.length ; x++){
+            document.getElementById(renewCards[x]).style.visibility = 'visible';
+            document.getElementById(renewCards[x]).style.opacity = '1';
+        }
 
-    for(let x=0 ; x<renewCards.length ; x++){
-        document.getElementById(renewCards[x]).style.visibility = 'visible';
-        document.getElementById(renewCards[x]).style.opacity = '1';
-    }
+        // Shuffle cards again
+        sCards = shuffleCards(cards1.concat(cards2));
 
-    // Shuffle cards again
-    sCards = shuffleCards(cards1.concat(cards2));
-
-    // Shuffle cards animation
-    for(let x=0 ; x<cardsAmount ; x++){
-        let aC = animateCards();
-        document.getElementById(x).style.top = `${aC[0]}px`;
-        document.getElementById(x).style.left = `${aC[1]}px`;
-        document.getElementById(x).style.transform = `rotate(${aC[2]}deg)`;
-        document.getElementById(x).style.backgroundImage = `url(/cards/${defCard})`;
-    }
+        // Shuffle cards animation
+        for(let x=0 ; x<cardsAmount ; x++){
+            let aC = animateCards();
+            document.getElementById(x).style.top = `${aC[0]}px`;
+            document.getElementById(x).style.left = `${aC[1]}px`;
+            document.getElementById(x).style.transform = `rotate(${aC[2]}deg)`;
+            document.getElementById(x).style.backgroundImage = `url(/cards/${defCard})`;
+        }
+    }, 500);
 
     /* DOM manipulation, animations and sounds */
+    // Hide end message 
+    HTMLendMessage.style.opacity = '0';
+    setTimeout(function(){    
+        HTMLendMessage.style.display = 'none';
+    }, 500);
+
     // Matches
-    HTMLmatches.innerHTML = `<h1><span id="matches-match ">${matches}</span>/${cardsAmount/2}</h1>`;
+    HTMLmatches.innerHTML = `<h1>${matches}/${cardsAmount/2}</h1>`;
     HTMLmatches.style.opacity = '0';
     setTimeout(function(){
         HTMLmatches.style.display = 'none';
@@ -322,15 +324,6 @@ function resetLocalStorate(){
     HTMLhistory.innerHTML = '<p class="no-history-available">No history available</p>';
 }
 
-function toggleHistory(game){
-    console.log(game);
-    if(game){
-        console.log('Show history');
-    }
-    else
-        console.log('Hide history');
-}
-
 function clearHistory(){
     let hold = JSON.parse(localStorage.getItem('history'));
     hold = [];
@@ -383,6 +376,10 @@ function playCard(id){
                             // Game over
                             setTimeout(function(){
                                 HTMLstop.innerHTML = 'Restart';
+                                HTMLendMessage.style.display = 'block';
+                                setTimeout(function(){
+                                    HTMLendMessage.style.opacity = '1';
+                                }, 20);
                             }, 1000);
 
                             gameStarted = false;
@@ -392,7 +389,6 @@ function playCard(id){
                             // Reset faults
                             faults = 0;
 
-                            toggleHistory(gameStarted);
                             clearTimers();
                         }
 
@@ -415,7 +411,7 @@ function playCard(id){
                                 document.getElementById(secondCard.id).style.visibility = 'hidden';
 
                                 // Update matches in HTML
-                                HTMLmatches.innerHTML = `<h1><span id="matches-match ">${matches}</span>/${cardsAmount/2}</h1>`;
+                                HTMLmatches.innerHTML = `<h1>${matches}/${cardsAmount/2}</h1>`;
                             }, 150);
                             
                             lock = false;

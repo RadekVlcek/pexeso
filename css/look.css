@@ -64,6 +64,14 @@ ul#target li:hover {
     border: 1px solid #cccccc;
 }
 
+/* End message */
+#end-message {
+    display: none;
+    text-align: center;
+    opacity: 0;
+    transition: opacity .5s;
+}
+
 /* DETAILS */
 #details {
     opacity: 0;
@@ -164,10 +172,6 @@ ul#target li:hover {
 
 #matches h1 {
     margin: 15px 0px 0px 0px;
-}
-
-#matches-match {
-    
 }
 
 /* History wrap */
