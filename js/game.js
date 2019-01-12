@@ -156,6 +156,14 @@ function startGame(){
 }
 
 function stopGame(){
+    var delay1 = 0,
+        delay2 = 400;
+
+    if(matches == cardsAmount/2){
+        delay1 = 500;
+        delay2 *= 2;
+    }
+
     clearTimers();
     collectData(matches, faults, timeOutput);
     printCollectedData(JSON.parse(localStorage.getItem('history')));
@@ -190,7 +198,10 @@ function stopGame(){
             document.getElementById(x).style.transform = `rotate(${aC[2]}deg)`;
             document.getElementById(x).style.backgroundImage = `url(/cards/${defCard})`;
         }
-    }, 500);
+
+        // Play sound
+        shuffleStartAudio.play();
+    }, delay1);
 
     /* DOM manipulation, animations and sounds */
     // Hide end message 
@@ -213,9 +224,6 @@ function stopGame(){
     HTMLstop.style.display = 'none';
     HTMLstart.style.display = 'inline-block';
 
-    // Play sound
-    shuffleStartAudio.play();
-
     // History & Footer slide down
     setTimeout(function(){
         detailsSlideAudio.play();
@@ -236,7 +244,7 @@ function stopGame(){
 
         // Reset matches
         matches = 0;
-    }, 400);
+    }, delay2);
 }
 
 // In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
