@@ -298,7 +298,9 @@ function printCards(){
 
 // Send collected data to Local Storage
 function collectData(m, f, tO){
-    dataObj = { "matches": m, "faults": f, "timePlayed": tO };
+    m = m == cardsAmount/2 ? 'yes' : 'no';
+
+    dataObj = { "completed": m, "faults": f, "timePlayed": tO };
     let hold = JSON.parse(localStorage.getItem('history'));
     
     hold.unshift(dataObj);
@@ -314,14 +316,14 @@ function printCollectedData(data){
     output = '';
     for(let x=0 ; x<data.length ; x++){
         output += `<tr>
-                        <td>${data[x].matches}</td>
+                        <td>${data[x].completed}</td>
                         <td>${data[x].faults}</td>
                         <td>${data[x].timePlayed}</td>
                     </tr>`;
     }
 
     HTMLhistory.innerHTML = `
-        <tr><th>Matches</th><th>Mistakes</th><th>Time played</th></tr>
+        <tr><th>Completed</th><th>Mistakes</th><th>Time played</th></tr>
         ${output}
     `;
 }
