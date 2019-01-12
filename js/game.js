@@ -14,7 +14,7 @@ var timerMatch,
     newMins = 0,
     newMils = 0,
     animDelay = 0,
-    cardsAmount = 4,
+    cardsAmount = 36,
     sH = screen.height/4.5,
     sW = screen.width/3,
     cards1 = [],
@@ -370,7 +370,7 @@ function playCard(id){
                 secondCard.src = getSrc;
                 secondCard.id = id;
 
-                // match
+                // Match
                 if(firstCard.src == secondCard.src){
                     if(firstCard.id != secondCard.id){
                         matches++;
@@ -379,9 +379,8 @@ function playCard(id){
                         renewCards.push(firstCard.id);
                         renewCards.push(secondCard.id);
                         
-                        // If there are no cards left
+                        // Game over
                         if(matches == cardsAmount/2){
-                            // Game over
                             setTimeout(function(){
                                 HTMLstop.innerHTML = 'Restart';
                                 HTMLendMessage.style.display = 'block';
@@ -422,8 +421,12 @@ function playCard(id){
                                 HTMLmatches.innerHTML = `<h1>${matches}/${cardsAmount/2}</h1>`;
                             }, 150);
                             
+
+                        }, 700);
+
+                        setTimeout(function(){
                             lock = false;
-                        }, 550);
+                        }, 850);
                     }
 
                     else return;
@@ -437,11 +440,11 @@ function playCard(id){
                         sC = document.getElementById(secondCard.id);
                     
                     timerNotMatch = setTimeout(function(){
-                        fC.style.transform = 'rotate(35deg)';
-                        sC.style.transform = 'rotate(35deg)';
-
                         // Play audio
                         cardsFaultAudio.play();
+
+                        fC.style.transform = 'rotate(35deg)';
+                        sC.style.transform = 'rotate(35deg)';
 
                         setTimeout(function(){
                             fC.style.backgroundImage = `url(/cards/${defCard})`;
