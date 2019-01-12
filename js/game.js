@@ -343,7 +343,6 @@ function clearHistory(){
 function playCard(id){
     if(gameStarted){
         if(!lock){
-            console.log(matches);
             clickFirstAudio.pause();
             clickFirstAudio.currentTime = 0.0;
             clickFirstAudio.play();
