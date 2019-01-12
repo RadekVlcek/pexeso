@@ -18,6 +18,13 @@ a:active {
     text-decoration: underline;
 }
 
+#ok {
+    display: none;
+    max-width: 100%;
+    margin: 100px 50px;
+    text-align: center;
+}
+
 /* CARDS */
 ul#target {
     /* Fixed width must be here */
@@ -242,4 +249,14 @@ table#history tr:not(:first-of-type):hover {
     -moz-transition: bottom .5s, opacity .3s;
     -ms-transition: bottom .5s, opacity .3s;
     transition: bottom .5s, opacity .3s;
+}
+
+@media(max-width: 973px){
+    #big-boss {
+        display: none;
+    }
+
+    #ok {
+        display: block;
+    }
 }
