@@ -76,6 +76,9 @@ ul#target li:hover {
     display: none;
     text-align: center;
     opacity: 0;
+    -webkit-transition: opacity .5s;
+    -moz-transition: opacity .5s;
+    -ms-transition: opacity .5s;
     transition: opacity .5s;
 }
 
