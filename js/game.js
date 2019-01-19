@@ -57,11 +57,16 @@ function init(){
     // Merge both arrays and shuffle elements
     sCards = shuffleCards(cards1.concat(cards2));
 
-    // TEST - Preload all images
+    /**
+     * Preload all images on init.
+     * This will cause images to load twice (second time when clicked on a card)
+     * but will ensure that ALL images are already preloaded and only need to be rendered.
+     */
     for(let x=0 ; x<sCards.length ; x++){
         let preload_img = new Image();
         preload_img.src = `/cards/${sCards[x].src}.png`;
     }
+    preload_img = null;
 
     // Yup, print cards...
     printCards();
