@@ -57,6 +57,12 @@ function init(){
     // Merge both arrays and shuffle elements
     sCards = shuffleCards(cards1.concat(cards2));
 
+    // TEST - Preload all images
+    for(let x=0 ; x<sCards.length ; x++){
+        let preload_img = new Image();
+        preload_img.src = `/cards/${sCards[x].src}.png`;
+    }
+
     // Yup, print cards...
     printCards();
 
@@ -350,9 +356,8 @@ function playCard(id){
             clickFirstAudio.play();
             let getSrc = sCards[id].src;
 
-            // First reveal the cards
+            // First reveal the card
             document.getElementById(id).style.transform = 'rotate(35deg)';
-
             setTimeout(function(){
                 document.getElementById(id).style.backgroundImage = `url(/cards/${getSrc}.png)`;
                 document.getElementById(id).style.transform = 'rotate(0deg)';
