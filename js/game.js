@@ -14,9 +14,6 @@ var timerMatch,
     newMins = 0,
     newMils = 0,
     animDelay = 0,
-    cardsAmount = 36,
-    sH = screen.height/4.5,
-    sW = screen.width/3,
     cards1 = [],
     cards2 = [],
     sCards = [],
@@ -24,27 +21,33 @@ var timerMatch,
     firstCard = { src: '', id: '' },
     secondCard = { src: '', id: '' },
     output = '',
-    timeOutput = '',
-    defCard = 'secret.png',
-    HTMLstart = document.getElementById('start'),
-    HTMLshuffling = document.getElementById('shuffling'),
-    HTMLstop = document.getElementById('stop'),
-    HTMLtarget = document.getElementById('target'),
-    HTMLmatches = document.getElementById('matches'),
-    HTMLhistory = document.getElementById('history'),
-    HTMLhistoryWrap = document.getElementById('history-wrap'),
-    HTMLfooter = document.getElementById('footer');
-    HTMLtime = document.getElementById('time'),
-    HTMLtimeMain = document.getElementById('main'),
-    HTMLtimeMili = document.getElementById('mili'),
-    HTMLdetails = document.getElementById('details'),
-    HTMLclearHistory = document.getElementById('clear-history'),
-    HTMLendMessage = document.getElementById('end-message'),
-    shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3'),
-    clickFirstAudio = new Audio('/audio/ClickFirst.mp3'),
-    cardsMatchAudio = new Audio('/audio/MatchAudio.mp3'),
-    cardsFaultAudio = new Audio('/audio/FaultAudio.mp3'),
-    detailsSlideAudio = new Audio('/audio/DetailsSlide.mp3');
+    timeOutput = '';
+
+const defCard = 'secret.png',
+      cardsAmount = 36,
+      sH = screen.height/4.5,
+      sW = screen.width/3;
+
+const HTMLstart = document.getElementById('start'),
+      HTMLshuffling = document.getElementById('shuffling'),
+      HTMLstop = document.getElementById('stop'),
+      HTMLtarget = document.getElementById('target'),
+      HTMLmatches = document.getElementById('matches'),
+      HTMLhistory = document.getElementById('history'),
+      HTMLhistoryWrap = document.getElementById('history-wrap'),
+      HTMLfooter = document.getElementById('footer');
+      HTMLtime = document.getElementById('time'),
+      HTMLtimeMain = document.getElementById('main'),
+      HTMLtimeMili = document.getElementById('mili'),
+      HTMLdetails = document.getElementById('details'),
+      HTMLclearHistory = document.getElementById('clear-history'),
+      HTMLendMessage = document.getElementById('end-message');
+
+const shuffleStartAudio = new Audio('/audio/ShuffleCards.mp3'),
+      clickFirstAudio = new Audio('/audio/ClickFirst.mp3'),
+      cardsMatchAudio = new Audio('/audio/MatchAudio.mp3'),
+      cardsFaultAudio = new Audio('/audio/FaultAudio.mp3'),
+      detailsSlideAudio = new Audio('/audio/DetailsSlide.mp3');
 
 function init(){
     HTMLdetails.style.opacity = '1';
@@ -258,7 +261,7 @@ function stopGame(){
     }, delay2);
 }
 
-// In order to achvieve efficient permutation we need to use Fisher-Yates shuffle algorithm
+// In order to achieve efficient permutation we need to use Fisher-Yates shuffle algorithm
 function shuffleCards(cards) {
     var j, x, i;
     for (i=cards.length-1 ; i>0 ; i--){
@@ -282,8 +285,8 @@ function animateCards(){
 
 // Print cards
 function printCards(){
-    var inc = 0,
-        sqrt = Math.sqrt(cardsAmount);
+    var inc = 0;
+    const sqrt = Math.sqrt(cardsAmount);
 
     for(let row=0 ; row<sqrt ; row++){
         for(let col=0 ; col<sqrt ; col++){
@@ -304,6 +307,7 @@ function printCards(){
         output += '<br>';
     }
 
+    // Print cards
     HTMLtarget.innerHTML = output;
 }
 
@@ -350,6 +354,43 @@ function clearHistory(){
     hold = [];
     localStorage.setItem('history', JSON.stringify(hold));
     location.reload();
+}
+
+function runTimer(){
+    timeOutput = '00:00';
+
+    timer = setInterval(function(){
+        newSecs++;
+        
+        if(newSecs < 10)
+            newSecs = `0${newSecs}`;
+
+        if(newSecs > 59){
+            newSecs = 0;
+            newMins++;
+        }
+
+        if(newMins == 10)
+            clearTimers();
+
+        timeOutput = `0${newMins}:${newSecs}`;
+        HTMLtimeMain.innerHTML = timeOutput;
+    }, 1000);
+}
+
+function runMilTimer(){
+    milTimer = setInterval(function(){
+        newMils++;
+
+        if(newMils > 9) newMils = 0;
+        
+        HTMLtimeMili.innerHTML = newMils;
+    }, 100);
+}
+
+function clearTimers(){
+    clearInterval(timer);
+    clearInterval(milTimer);
 }
 
 // Take action when clicked on a card
@@ -476,41 +517,4 @@ function playCard(id){
     }
 
     else return;
-}
-
-function runTimer(){
-    timeOutput = '00:00';
-
-    timer = setInterval(function(){
-        newSecs++;
-        
-        if(newSecs < 10)
-            newSecs = `0${newSecs}`;
-
-        if(newSecs > 59){
-            newSecs = 0;
-            newMins++;
-        }
-
-        if(newMins == 10)
-            clearTimers();
-
-        timeOutput = `0${newMins}:${newSecs}`;
-        HTMLtimeMain.innerHTML = timeOutput;
-    }, 1000);
-}
-
-function runMilTimer(){
-    milTimer = setInterval(function(){
-        newMils++;
-
-        if(newMils > 9) newMils = 0;
-        
-        HTMLtimeMili.innerHTML = newMils;
-    }, 100);
-}
-
-function clearTimers(){
-    clearInterval(timer);
-    clearInterval(milTimer);
 }
