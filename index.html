@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
+    <link rel="stylesheet" href="css/look.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <title>Pexeso | Game by Radek Vlcek</title>
+</head>
+<body id="body">
+    <div id="ok">
+        <h4>This game does not support a screen resolution of your device.</h4>
+        <h1>Please play this game on your laptop / desktop PC.</h1>
+    </div>
+
+    <div id="big-boss">
+        <div id="details">
+            <h2>Pexeso <span id="radek-textsmaller">by Radek Vlcek</span></h2>
+            <div id="start"><span>Play</span></div>
+            <div id="shuffling"><span></span></div>
+            <div id="stop"><span>Stop</span></div>
+            <div id="time">
+                <div id="main">00:00</div>
+                <div id="mili">0</div>
+            </div>
+
+            <div id="history-wrap">
+                <table id="history"></table>
+                <a href="#" id="clear-history">clear history</a>
+            </div>
+
+            <div id="footer">
+                <p>Pictures come from <a href="https://pixabay.com/" target="_blank">Pixabay</a></p>
+                <p>Created by <a href="http://radek.tech" target="_blank">Radoslav Vlcek</a></p>
+                <a id="github-link" href="https://github.com/RadekVlcek/pexeso" target="_blank"><img src="img/mark-github.png" alt="Github Link" width="16"></a>
+            </div>
+
+            <div id="matches"></div>
+        </div>
+
+        <ul id="target"></ul>
+        <div id="end-message">
+            <h1>Congratulations!</h1>
+            <h3>The key of this game, besides of improving your memory, is to play as fast as possible in order to achieve the least playing time.</h3>
+            <p>If you like the game, hit RESTART and play it again!</p>
+        </div>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
